@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OVERCLOCK // PC Gaming Enthusiast Wiki & Command Center</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Google Fonts: Orbitron & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'monospace'],
+            display: ['"Orbitron"', 'sans-serif'],
+          },
+          colors: {
+            cyber: {
+              950: '#05070a',
+              900: '#0a0d14',
+              850: '#0f1420',
+              800: '#151c2c',
+              700: '#1e293f',
+              600: '#2a3a59',
+              accent: 'var(--color-accent)',
+              'accent-glow': 'var(--color-accent-glow)',
+              amber: '#f59e0b',
+              cyan: '#06b6d4',
+              neon: '#10b981',
+              magenta: '#ec4899',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --color-accent: #06b6d4;
+      --color-accent-glow: rgba(6, 182, 212, 0.25);
+      --bg-chassis: #07090e;
+    }
+
+    [data-theme="amber-crt"] {
+      --color-accent: #f59e0b;
+      --color-accent-glow: rgba(245, 158, 11, 0.25);
+    }
+
+    [data-theme="matrix-green"] {
+      --color-accent: #10b981;
+      --color-accent-glow: rgba(16, 185, 129, 0.25);
+    }
+
+    body {
+      background-color: var(--bg-chassis);
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Tactile Cyber Grid Background */
+    .cyber-grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* CRT Scanline Overlay */
+    .scanlines {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.45) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+    }
+
+    /* Tactical Beveled Corners */
+    .beveled-corner-sm {
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    
+    .beveled-corner-md {
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+
+    /* Custom Slim Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090c13;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-accent);
+    }
+  </style>
+</head>
+<body class="cyber-grid-bg min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black relative overflow-x-hidden">
+
+  <!-- ================================================================= -->
+  <!-- LAYER 1: FX & SCANLINES (Z-0 to Z-10)                             -->
+  <!-- ================================================================= -->
+  <div id="crt-overlay" class="scanlines pointer-events-none fixed inset-0 z-10 opacity-70 transition-opacity duration-300"></div>
+
+  <!-- ================================================================= -->
+  <!-- LAYER 2: BASE SURFACE & CHASSIS (Z-20 to Z-30)                    -->
+  <!-- ================================================================= -->
+  
+  <!-- HEADER CONSOLE -->
+  <header id="header-console" class="relative z-20 border-b border-slate-800 bg-cyber-950/90 backdrop-blur-md px-4 py-2.5 flex items-center justify-between sticky top-0">
+    <!-- Brand / System Title -->
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 bg-cyber-900 border border-cyan-500/40 rounded flex items-center justify-center text-cyan-400 shadow-[0_0_12px_var(--color-accent-glow)]">
+        <i data-lucide="cpu" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-display font-black tracking-wider text-base text-white">OVERCLOCK</span>
+          <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 font-bold uppercase tracking-widest">WIKI.SYS</span>
+        </div>
+        <p class="text-[10px] text-slate-500 uppercase tracking-wider font-medium">PC Gaming Enthusiast Dossier</p>
+      </div>
+    </div>
+
+    <!-- Center Telemetry & Clock -->
+    <div class="hidden md:flex items-center gap-6 text-xs text-slate-400 font-mono">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-slate-500">NODE:</span>
+        <span class="text-slate-300 font-semibold">ONLINE</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-500"></i>
+        <span id="telemetry-clock" class="text-slate-300">--:--:-- UTC</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i data-lucide="database" class="w-3.5 h-3.5 text-slate-500"></i>
+        <span class="text-slate-500">INDEXED STORE:</span>
+        <span id="telemetry-storage" class="text-cyan-400">ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- Right Controls: Audio FX, Scanlines, Theme Selector & Profile Chip -->
+    <div class="flex items-center gap-2.5">
+      <!-- Audio FX Synthesizer Toggle -->
+      <button id="btn-toggle-sound" title="Toggle Synthesizer Sound Effects" class="p-2 rounded border border-slate-800 bg-cyber-900 hover:border-slate-700 text-cyan-400 transition">
+        <i data-lucide="volume-2" id="icon-sound" class="w-4 h-4"></i>
+      </button>
+
+      <!-- CRT Toggle -->
+      <button id="btn-toggle-scanlines" title="Toggle CRT Scanline Filter" class="p-2 rounded border border-slate-800 bg-cyber-900 hover:border-slate-700 text-slate-400 hover:text-white transition">
+        <i data-lucide="monitor" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Theme Dropdown -->
+      <div class="relative">
+        <select id="select-theme" class="text-xs bg-cyber-900 border border-slate-800 text-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 cursor-pointer">
+          <option value="cyber-dark">Cyber Cyan</option>
+          <option value="amber-crt">Amber CRT</option>
+          <option value="matrix-green">Matrix Green</option>
+        </select>
+      </div>
+
+      <!-- User Dossier Trigger Button -->
+      <button id="btn-open-profile" class="flex items-center gap-2.5 px-3 py-1.5 rounded border border-cyan-500/40 bg-cyan-950/20 hover:bg-cyan-950/40 transition group">
+        <div id="profile-chip-avatar" class="w-6 h-6 rounded bg-cyber-850 border border-cyan-500/60 flex items-center justify-center text-xs text-cyan-300">
+          <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+        </div>
+        <div class="text-left hidden sm:block">
+          <div id="profile-chip-handle" class="text-xs font-bold text-white group-hover:text-cyan-300 transition">Spectre_99</div>
+          <div id="profile-chip-title" class="text-[9px] text-slate-400 uppercase tracking-tighter">Silicon Veteran</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-white group-hover:translate-x-0.5 transition"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <div class="relative z-20 flex-1 flex flex-col md:flex-row max-w-[1600px] w-full mx-auto">
+    
+    <!-- LEFT SIDEBAR: NAVIGATION CONSOLE -->
+    <aside id="sidebar-nav" class="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-800/80 bg-cyber-950/60 p-3 flex md:flex-col justify-between shrink-0">
+      <div class="space-y-1 w-full flex md:flex-col gap-1 md:gap-1 overflow-x-auto">
+        <div class="hidden md:block px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Navigation Module</div>
+        
+        <button data-tab="milestones" class="tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-white bg-cyber-800 border-l-2 border-cyan-500 transition">
+          <i data-lucide="trophy" class="w-4 h-4 text-cyan-400"></i>
+          <span>Hall of Giants</span>
+        </button>
+
+        <button data-tab="genres" class="tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-cyber-900 transition">
+          <i data-lucide="split" class="w-4 h-4 text-slate-500"></i>
+          <span>Genre Debates</span>
+        </button>
+
+        <button data-tab="eras" class="tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-cyber-900 transition">
+          <i data-lucide="microchip" class="w-4 h-4 text-slate-500"></i>
+          <span>Hardware Eras</span>
+        </button>
+
+        <button data-tab="vault" class="tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-cyber-900 transition">
+          <i data-lucide="bookmark" class="w-4 h-4 text-slate-500"></i>
+          <span>Operative Vault</span>
+        </button>
+      </div>
+
+      <!-- Quick Telemetry Card at Bottom of Sidebar -->
+      <div class="hidden md:block border border-slate-800/80 rounded bg-cyber-900/60 p-3 mt-4 text-xs font-mono">
+        <div class="flex items-center justify-between text-slate-500 text-[10px] uppercase font-bold mb-1">
+          <span>Active Operative</span>
+          <span id="sidebar-operative-affinity" class="text-cyan-400 text-[9px] uppercase tracking-wider">1990s Glide</span>
+        </div>
+        <div id="sidebar-specs-display" class="text-[11px] text-slate-300 truncate">Rig: Ryzen 7 // RTX 4080</div>
+        <div class="mt-2 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-400">
+          <span>Cleared Milestones:</span>
+          <span id="sidebar-cleared-count" class="text-emerald-400 font-bold">0 Titles</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT & CONTENT MATRIX -->
+    <main id="main-viewport" class="flex-1 p-4 md:p-6 flex flex-col min-w-0">
+      
+      <!-- SUB-HEADER FILTER & SEARCH BAR -->
+      <div id="filter-bar" class="mb-6 flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between bg-cyber-900/70 border border-slate-800 p-3 rounded">
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+          <input 
+            type="text" 
+            id="input-wiki-search" 
+            placeholder="Search game titles, engines, hardware breakthroughs, or genres..."
+            class="w-full bg-cyber-950 border border-slate-800 rounded pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition font-mono"
+          >
+        </div>
+
+        <!-- Filter Dropdowns & Quick Selectors -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Era / Decade Filter -->
+          <select id="select-decade" class="bg-cyber-950 border border-slate-800 text-slate-300 text-xs rounded px-3 py-2 focus:outline-none focus:border-cyan-500 font-mono">
+            <option value="all">All Decades</option>
+            <option value="90s">1990s (Shareware & 3D Genesis)</option>
+            <option value="00s">2000s (PhysX & The Crysis Era)</option>
+            <option value="10s">2010s (Digital Distribution & Steam)</option>
+            <option value="20s">2020s (Path-Tracing & Modern CRPG)</option>
+          </select>
+
+          <!-- Genre Filter -->
+          <select id="select-genre" class="bg-cyber-950 border border-slate-800 text-slate-300 text-xs rounded px-3 py-2 focus:outline-none focus:border-cyan-500 font-mono">
+            <option value="all">All Genres</option>
+            <option value="CRPG">CRPG</option>
+            <option value="FPS">FPS / Boomer Shooter</option>
+            <option value="Immersive Sim">Immersive Sim</option>
+            <option value="Strategy">Strategy / RTS</option>
+            <option value="MMORPG">MMORPG</option>
+          </select>
+
+          <button id="btn-reset-filters" class="px-3 py-2 rounded bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-xs text-slate-300 transition" title="Reset Filters">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ACTIVE TAB VIEW CONTAINER -->
+      <section id="matrix-container" class="flex-1">
+        
+        <!-- PANE 1: HALL OF GIANTS (MILESTONES) -->
+        <div id="tab-content-milestones" class="tab-pane">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-sm font-display font-bold text-white tracking-wider uppercase">Hall of Giants // Milestone Releases</h2>
+              <p class="text-xs text-slate-500">Watershed titles that defined PC architectures, engine design, and gaming culture.</p>
+            </div>
+            <span id="milestone-counter-badge" class="text-[10px] font-mono px-2 py-1 rounded bg-cyber-900 border border-slate-800 text-slate-400">Showing 7 entries</span>
+          </div>
+          
+          <div id="milestones-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <!-- Dynamically populated via renderMilestones() -->
+          </div>
+        </div>
+
+        <!-- PANE 2: GENRE DEBATES -->
+        <div id="tab-content-genres" class="tab-pane hidden">
+          <div class="mb-4">
+            <h2 class="text-sm font-display font-bold text-white tracking-wider uppercase">Genre Debates // Popular Consensus</h2>
+            <p class="text-xs text-slate-500">Community sentiment analysis, historical golden ages, and modern monetization debates.</p>
+          </div>
+          
+          <div id="genres-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Dynamically populated via renderGenreDebates() -->
+          </div>
+        </div>
+
+        <!-- PANE 3: HARDWARE ERAS -->
+        <div id="tab-content-eras" class="tab-pane hidden">
+          <div class="mb-4">
+            <h2 class="text-sm font-display font-bold text-white tracking-wider uppercase">Hardware Eras // Silicon Milestones</h2>
+            <p class="text-xs text-slate-500">The evolution of PC gaming hardware from software VGA rendering to real-time path tracing.</p>
+          </div>
+          
+          <div id="eras-container" class="space-y-4">
+            <!-- Dynamically populated via renderHardwareEras() -->
+          </div>
+        </div>
+
+        <!-- PANE 4: OPERATIVE VAULT (BOOKMARKS & CLEARS) -->
+        <div id="tab-content-vault" class="tab-pane hidden">
+          <div class="mb-4">
+            <h2 class="text-sm font-display font-bold text-white tracking-wider uppercase">Operative Personal Vault</h2>
+            <p class="text-xs text-slate-500">Your bookmarked wiki entries, cleared milestones, and personal retrospectives.</p>
+          </div>
+          
+          <div id="vault-empty-state" class="border border-dashed border-slate-800 rounded-lg p-12 text-center hidden">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-cyber-900 border border-slate-800 flex items-center justify-center text-slate-600">
+              <i data-lucide="bookmark-x" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xs font-bold uppercase text-slate-400">Vault Empty</h3>
+            <p class="text-[11px] text-slate-600 mt-1">Bookmark wiki entries or mark games as cleared to populate your personal dossier.</p>
+          </div>
+
+          <div id="vault-items-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <!-- Dynamically populated from bookmarked & cleared IDs -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- LAYER 3: SLIDE-OUT DRAWERS (Z-40 to Z-50)                         -->
+  <!-- ================================================================= -->
+
+  <!-- Drawer Backdrop -->
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0"></div>
+
+  <!-- Profile / Character Dossier Drawer -->
+  <aside id="profile-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[500px] bg-cyber-950 border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col shadow-2xl">
+    <!-- Drawer Header -->
+    <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-cyber-900/60">
+      <div class="flex items-center gap-2.5">
+        <div class="p-1.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-400">
+          <i data-lucide="user-check" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-display font-bold text-white tracking-wider">OPERATIVE DOSSIER</h2>
+          <p class="text-[10px] text-slate-500 uppercase">Local Character Identity & Rig Specs</p>
+        </div>
+      </div>
+      <button id="btn-close-profile-drawer" class="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Body -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+      
+      <!-- Interactive Dossier Card Preview -->
+      <div class="border border-slate-800 bg-cyber-900/70 rounded p-4 relative overflow-hidden beveled-corner-sm">
+        <div class="flex items-center gap-3.5">
+          <div id="preview-avatar-badge" class="w-12 h-12 rounded bg-cyber-950 border-2 border-cyan-500 flex items-center justify-center text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.25)] shrink-0">
+            <i data-lucide="terminal" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center justify-between">
+              <span id="preview-handle" class="font-display font-black text-sm text-white tracking-wide truncate">Spectre_99</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 font-bold uppercase">READY</span>
+            </div>
+            <div id="preview-title" class="text-xs text-cyan-400 uppercase tracking-tight">Silicon Veteran</div>
+            <div id="preview-affinity-tag" class="text-[10px] text-slate-400 mt-1 truncate">Era: 1990s Shareware & Glide</div>
+          </div>
+        </div>
+        
+        <div class="mt-3 pt-3 border-t border-slate-800/80 grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-400">
+          <div>Cleared Milestones: <span id="preview-cleared-count" class="text-emerald-400 font-bold">0</span></div>
+          <div>Bookmarked Items: <span id="preview-bookmark-count" class="text-cyan-400 font-bold">0</span></div>
+        </div>
+      </div>
+
+      <!-- Identity Matrix -->
+      <div class="space-y-4">
+        <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest border-b border-slate-800/80 pb-1 flex items-center justify-between">
+          <span>Identity Matrix</span>
+          <span class="text-slate-600 font-mono text-[9px]">SEC-01</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Handle / Callsign</label>
+          <input type="text" id="input-profile-handle" maxlength="24" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Enthusiast Honorific / Title</label>
+          <select id="select-profile-title" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+            <option value="Silicon Veteran">Silicon Veteran</option>
+            <option value="Rig Architect">Rig Architect</option>
+            <option value="CRPG Lorekeeper">CRPG Lorekeeper</option>
+            <option value="Frame Chaser">Frame Chaser</option>
+            <option value="Shareware Pioneer">Shareware Pioneer</option>
+            <option value="Overclock Specialist">Overclock Specialist</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Preferred Era Affinity</label>
+          <select id="select-profile-era" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+            <option value="1990s Shareware & Glide">1990s (Shareware & 3dfx Glide)</option>
+            <option value="2000s Physics & Crysis">2000s (DirectX 9, PhysX & Crysis)</option>
+            <option value="2010s Digital Renaissance">2010s (Steam, Indie Boom & Vulkan)</option>
+            <option value="2020s Path-Tracing">2020s (Real-Time Path Tracing & CRPG Renaissance)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1.5">Avatar Glyph Selector (8 Presets)</label>
+          <div class="grid grid-cols-4 gap-2" id="avatar-picker-container"></div>
+        </div>
+      </div>
+
+      <!-- Battlestation Rig Telemetry -->
+      <div class="space-y-4">
+        <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest border-b border-slate-800/80 pb-1 flex items-center justify-between">
+          <span>Hardware Battlestation Telemetry</span>
+          <span class="text-slate-600 font-mono text-[9px]">SEC-02</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Processor (CPU)</label>
+          <input type="text" id="input-profile-cpu" placeholder="e.g., AMD Ryzen 7 7800X3D" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Graphics Accelerator (GPU)</label>
+          <input type="text" id="input-profile-gpu" placeholder="e.g., NVIDIA GeForce RTX 4080 Super" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Primary Peripheral / Key Relic</label>
+          <input type="text" id="input-profile-peripheral" placeholder="e.g., IBM Model M Clicky (1993)" class="w-full bg-cyber-900 border border-slate-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+      </div>
+
+      <!-- Backup / Portability Section -->
+      <div class="space-y-3 pt-2">
+        <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest border-b border-slate-800/80 pb-1 flex items-center justify-between">
+          <span>Data Portability & Vault Backup</span>
+          <span class="text-slate-600 font-mono text-[9px]">SEC-03</span>
+        </div>
+        <p class="text-[11px] text-slate-500">Your profile and personal retrospective notes are saved locally in this browser. Export or restore your authenticated JSON backup at any time.</p>
+        
+        <div class="flex items-center gap-2">
+          <button id="btn-export-profile" class="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Export Backup</span>
+          </button>
+          
+          <label class="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-800/70 hover:bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 transition cursor-pointer">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+            <span>Import JSON</span>
+            <input type="file" id="input-import-json" accept=".json" class="hidden">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Drawer Footer Actions -->
+    <div class="p-4 border-t border-slate-800 bg-cyber-900/80 flex items-center justify-between">
+      <button id="btn-reset-profile" class="text-xs text-rose-400 hover:text-rose-300">Reset Defaults</button>
+      <button id="btn-save-profile" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-black font-bold text-xs uppercase tracking-wider rounded beveled-corner-sm transition">
+        Save Dossier
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================================================================= -->
+  <!-- LAYER 4: INSPECTION MODAL & OVERLAYS (Z-60 to Z-70)               -->
+  <!-- ================================================================= -->
+  
+  <!-- Modal Backdrop -->
+  <div id="modal-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-md z-60 hidden transition-opacity duration-300 opacity-0 flex items-center justify-center p-4">
+    <!-- Inspection Dialog Box -->
+    <div id="inspection-modal" class="bg-cyber-950 border border-slate-800 w-full max-w-2xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col overflow-hidden relative beveled-corner-md">
+      
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-cyber-900/80">
+        <div class="flex items-center gap-2.5">
+          <div class="p-1.5 rounded bg-cyan-950/60 border border-cyan-500/40 text-cyan-400">
+            <i data-lucide="scan" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h2 id="modal-game-title" class="text-sm font-display font-bold text-white tracking-wider">GAME TITLE</h2>
+            <p id="modal-game-sub" class="text-[10px] text-slate-400 font-mono">DEVELOPER // YEAR</p>
+          </div>
+        </div>
+        <button id="btn-close-modal" class="p-2 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content Body -->
+      <div class="p-5 overflow-y-auto space-y-5">
+        
+        <!-- Hardware & Technical Architecture Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-cyber-900/60 p-3.5 rounded border border-slate-800 text-xs font-mono">
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">ENGINE & ARCHITECTURE</span>
+            <span id="modal-game-engine" class="text-slate-200">id Tech 1</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">HISTORICAL TARGET HARDWARE</span>
+            <span id="modal-game-hardware" class="text-cyan-400">Intel 486 DX2-66</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">GENRE CLASSIFICATION</span>
+            <span id="modal-game-genre" class="text-slate-200">FPS / Boomer Shooter</span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">COMMUNITY CONSENSUS</span>
+            <span id="modal-game-consensus" class="text-emerald-400 font-bold">99% CRITICAL ACCLAIM</span>
+          </div>
+        </div>
+
+        <!-- Historical Impact & Architectural Breakthrough -->
+        <div>
+          <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest font-mono mb-1.5">Architectural Breakthrough</h3>
+          <p id="modal-game-breakthrough" class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded border border-slate-800/80 font-mono"></p>
+        </div>
+
+        <!-- Cultural Retrospective & Community Verdict -->
+        <div>
+          <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest font-mono mb-1.5">Cultural Retrospective & Verdict</h3>
+          <p id="modal-game-verdict" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Personal Operative Retrospective Notes -->
+        <div class="pt-2 border-t border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest font-mono">Operative Personal Retrospective Note</h3>
+            <span class="text-[10px] text-slate-500 font-mono">LOCAL VAULT PERSISTENCE</span>
+          </div>
+          
+          <div class="mb-3">
+            <label class="block text-[11px] text-slate-400 mb-1 font-mono">Personal Rating (0 - 100):</label>
+            <input type="number" id="modal-note-rating" min="0" max="100" placeholder="e.g. 98" class="w-28 bg-cyber-900 border border-slate-800 rounded px-3 py-1.5 text-xs text-cyan-400 font-mono focus:outline-none focus:border-cyan-500">
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1 font-mono">Personal Notes & Retrospective:</label>
+            <textarea id="modal-note-content" rows="3" placeholder="Record personal recollections, playthrough notes, or hardware performance benchmarks..." class="w-full bg-cyber-900 border border-slate-800 rounded p-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-800 bg-cyber-900/80 flex items-center justify-between">
+        <button id="modal-btn-toggle-cleared" class="flex items-center gap-2 px-3 py-1.5 rounded text-xs font-mono font-bold transition bg-slate-800 text-slate-300 border border-slate-700">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>MARK AS CLEARED</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button id="modal-btn-save-note" class="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-black font-bold text-xs uppercase tracking-wider rounded beveled-corner-sm transition">
+            Save Note to Vault
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Overlay -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-70 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT: COMPLETE INTEGRATED CONTROLLER & AUDIO FX ENGINE      -->
+  <!-- ================================================================= -->
+  <script>
+    /**
+     * PROCEDURAL SYNTHESIZER FOR TACTILE SOUND FX (Zero External Assets)
+     */
+    class CyberAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      }
+
+      playBlip(freq = 880, duration = 0.04) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.5, this.ctx.currentTime + duration);
+
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          // Silent fallback if blocked
+        }
+      }
+
+      playConfirm() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } catch (e) {}
+      }
+    }
+
+    const cyberAudio = new CyberAudioEngine();
+
+    /**
+     * CURATED PC GAMING ENTHUSIAST DATASETS
+     */
+    const WIKI_DATABASE = {
+      milestones: [
+        {
+          id: 'doom-1993',
+          title: 'DOOM',
+          year: 1993,
+          decade: '90s',
+          developer: 'id Software',
+          engine: 'id Tech 1 (Doom engine)',
+          genre: 'FPS',
+          targetHardware: 'Intel 80486 DX2-66 / 4MB RAM / MS-DOS 5.0',
+          breakthrough: 'Normalized shareware distribution, network deathmatch multiplayer, and texture-mapped 2.5D rendering.',
+          consensusRating: 99,
+          verdict: 'The cultural singularity of PC gaming that turned office networks into multiplayer combat arenas.'
+        },
+        {
+          id: 'quake-1996',
+          title: 'Quake',
+          year: 1996,
+          decade: '90s',
+          developer: 'id Software',
+          engine: 'Quake engine (id Tech 2)',
+          genre: 'FPS',
+          targetHardware: 'Pentium 90MHz / 16MB RAM / DOS & Win95',
+          breakthrough: 'True real-time 3D polygons, client-side mouse-look, and ignited the consumer 3D hardware accelerator revolution (GLQuake / 3dfx).',
+          consensusRating: 98,
+          verdict: 'The definitive catalyst for dedicated 3D graphics cards and modern high-speed multiplayer esports.'
+        },
+        {
+          id: 'half-life-1998',
+          title: 'Half-Life',
+          year: 1998,
+          decade: '90s',
+          developer: 'Valve Corporation',
+          engine: 'GoldSrc',
+          genre: 'FPS',
+          targetHardware: 'Pentium 133MHz / 24MB RAM / Windows 95/98',
+          breakthrough: 'Seamless first-person environmental storytelling without cutscenes, scripted NPC AI, and the genesis of Counter-Strike.',
+          consensusRating: 99,
+          verdict: 'Reinvented narrative world-building and established PC modding as the world’s greatest incubation laboratory for new genres.'
+        },
+        {
+          id: 'deus-ex-2000',
+          title: 'Deus Ex',
+          year: 2000,
+          decade: '00s',
+          developer: 'Ion Storm',
+          engine: 'Unreal Engine 1',
+          genre: 'Immersive Sim',
+          targetHardware: 'Pentium II 300MHz / 64MB RAM / 16MB 3D Card',
+          breakthrough: 'Unprecedented emergent player agency, intertwining stealth, combat, dialogue hacking, and open-ended level sandboxes.',
+          consensusRating: 97,
+          verdict: 'The pinnacle of philosophical depth and emergent design, setting the gold standard for player autonomy.'
+        },
+        {
+          id: 'world-of-warcraft-2004',
+          title: 'World of Warcraft',
+          year: 2004,
+          decade: '00s',
+          developer: 'Blizzard Entertainment',
+          engine: 'Custom Proprietary Engine',
+          genre: 'MMORPG',
+          targetHardware: 'Pentium III 800MHz / 256MB RAM / 32MB 3D Card',
+          breakthrough: 'Seamless open continent streaming without loading screens between zones, frictionless questing, and cultural ubiquity.',
+          consensusRating: 96,
+          verdict: 'Mainstreamed PC online gaming to tens of millions, defining social virtual worlds for an entire generation.'
+        },
+        {
+          id: 'crysis-2007',
+          title: 'Crysis',
+          year: 2007,
+          decade: '00s',
+          developer: 'Crytek',
+          engine: 'CryEngine 2',
+          genre: 'FPS',
+          targetHardware: 'Core 2 Duo E6600 / 2GB RAM / GeForce 8800 GTX (DirectX 10)',
+          breakthrough: 'Photorealistic volumetric lighting, uncompromised vegetation physics, and a hardware benchmark that remained unconquered for nearly a decade.',
+          consensusRating: 94,
+          verdict: 'The ultimate "Can It Run Crysis?" benchmark that pushed PC enthusiast silicon past its limits.'
+        },
+        {
+          id: 'baldurs-gate-3-2023',
+          title: "Baldur's Gate 3",
+          year: 2023,
+          decade: '20s',
+          developer: 'Larian Studios',
+          engine: 'Divinity 4.0 Engine',
+          genre: 'CRPG',
+          targetHardware: 'Core i7-8700K / 16GB RAM / RTX 2060 Super (DirectX 11/Vulkan)',
+          breakthrough: 'Uncompromised turn-based D&D mechanics combined with full AAA cinematic performance capture and hundreds of divergent narrative paths.',
+          consensusRating: 98,
+          verdict: 'Proved to the global games industry that deep, complex PC-native roleplaying games without microtransactions remain commercial kingmakers.'
+        }
+      ],
+      genres: [
+        {
+          id: 'crpg-debate',
+          genre: 'CRPG (Computer Role-Playing Game)',
+          goldenAge: '1998 – 2002 (Infinity Engine Era)',
+          modernEra: '2020 – Present (Turn-Based Renaissance)',
+          communityConsensus: 94,
+          consensusSummary: 'Enthusiasts celebrate the return to reactive branching narratives over shallow action-RPG mechanics.',
+          keyDebate: 'Turn-Based Tactile Control vs. Real-Time with Pause (RTwP); Complex rulebook fidelity vs. mainstream accessibility.',
+          canonTitles: ["Baldur's Gate II", 'Planescape: Torment', 'Fallout 2', "Baldur's Gate 3"]
+        },
+        {
+          id: 'immersive-sim-debate',
+          genre: 'Immersive Sim',
+          goldenAge: '1998 – 2004 (Looking Glass & Ion Storm)',
+          modernEra: 'Critical darlings, continuous commercial struggle',
+          communityConsensus: 96,
+          consensusSummary: 'Universally revered by hardcore PC purists as the highest form of interactive level design and emergent problem-solving.',
+          keyDebate: 'Why do pure systemic simulations struggle commercially despite unanimous critical acclaim? The decline of intricate level design in favor of open-world map markers.',
+          canonTitles: ['Thief II', 'Deus Ex', 'System Shock 2', 'Prey (2017)']
+        },
+        {
+          id: 'boomer-shooter-debate',
+          genre: 'Boomer Shooter / Classic FPS',
+          goldenAge: '1993 – 1999 (The id & Build Engine Boom)',
+          modernEra: 'The Modern Retro Revival (New Blood / Nightdive)',
+          communityConsensus: 92,
+          consensusSummary: 'A massive community backlash against military cover shooters and unskippable cinematic walking sections.',
+          keyDebate: 'Movement speed, projectile dodging, and intricate keycard labyrinth design vs. modern aim-down-sights and regenerative health.',
+          canonTitles: ['DOOM II', 'Blood', 'DUSK', 'Ultrakill']
+        },
+        {
+          id: 'rts-strategy-debate',
+          genre: 'RTS & Grand Strategy',
+          goldenAge: '1998 – 2006 (Brood War to Age of Empires II & C&C)',
+          modernEra: 'Survives primarily via Paradox Grand Strategy & Competitive Remasters',
+          communityConsensus: 91,
+          consensusSummary: 'The undisputed mouse-and-keyboard PC bastion that consoles could never replicate.',
+          keyDebate: 'High APM (actions-per-minute) micro barrier-to-entry vs. macro tactical accessibility; The rise of MOBAs cannibalizing the RTS audience.',
+          canonTitles: ['StarCraft: Brood War', 'Command & Conquer: Red Alert 2', 'Age of Empires II', 'Total War: Medieval II']
+        }
+      ],
+      eras: [
+        {
+          id: 'era-glide-voodoo',
+          title: 'The 3dfx Voodoo & Glide Revolution',
+          period: '1996 – 2000',
+          breakthroughChips: '3dfx Voodoo 1 (SST-1), Voodoo2, RIVA TNT2',
+          summary: 'The shift from software CPU rasterization to dedicated 3D add-in cards. Installing a secondary card connected via a pass-through cable introduced bilinear filtering, colored lighting, and silky 60 FPS in GLQuake and Unreal.'
+        },
+        {
+          id: 'era-programmable-shaders',
+          title: 'Programmable Shaders & DirectX 9',
+          period: '2001 – 2006',
+          breakthroughChips: 'GeForce 3, GeForce 6800 Ultra, Radeon 9700 Pro',
+          summary: 'The death of the fixed-function pipeline. Pixel and Vertex Shaders enabled normal mapping, dynamic specular gloss, and volumetric water physics in titles like Half-Life 2, Doom 3, and Far Cry.'
+        },
+        {
+          id: 'era-unshackled-crysis',
+          title: 'The Multi-Core Shock & CryEngine 2',
+          period: '2007 – 2015',
+          breakthroughChips: 'GeForce 8800 GTX, Intel Core 2 Quad Q6600',
+          summary: 'The architecture leap of unified shader models under DirectX 10. Games began anticipating multi-gigabyte VRAM limits and massive clock frequencies before power limits mandated multi-core parallelization.'
+        },
+        {
+          id: 'era-path-tracing',
+          title: 'Real-Time Ray Tracing & Neural Reconstruction',
+          period: '2018 – Present',
+          breakthroughChips: 'GeForce RTX 2080 to RTX 4090, Radeon RX 7900 XTX',
+          summary: 'Hardware BVH traversal, RT cores, and Tensor cores. Swapping baked lightmaps for full path-traced bounces, accompanied by deep-learning frame generation and reconstruction (DLSS/FSR).'
+        }
+      ]
+    };
+
+    /**
+     * UNIFIED REACTIVE STORE WITH SCHEMA VALIDATION
+     */
+    class Store {
+      constructor() {
+        this.STORAGE_KEY = 'PC_ENTHUSIAST_HUB_STATE_V1';
+        this.subscribers = [];
+        this.state = this.loadInitialState();
+      }
+
+      getDefaultState() {
+        return {
+          schemaVersion: '1.0.0',
+          config: {
+            theme: 'cyber-dark',
+            scanlines: true,
+            audioFx: true,
+            activeTab: 'milestones'
+          },
+          profile: {
+            handle: 'Spectre_99',
+            title: 'Silicon Veteran',
+            avatarId: 'terminal',
+            preferredEra: '1990s Shareware & Glide',
+            rigSpecs: {
+              cpu: 'AMD Ryzen 7 7800X3D',
+              gpu: 'NVIDIA GeForce RTX 4080',
+              peripheral: 'IBM Model M Clicky'
+            },
+            stats: {
+              clearedMilestones: ['doom-1993', 'half-life-1998'],
+              bookmarkedItems: ['deus-ex-2000', 'crpg-debate'],
+              lastUpdated: new Date().toISOString()
+            }
+          },
+          wikiFilters: {
+            query: '',
+            decade: 'all',
+            genre: 'all'
+          },
+          vaultNotes: {
+            'doom-1993': {
+              rating: 100,
+              content: 'Still the cleanest shotgun feedback loop in video game history. Tested on 486 DX2-66 hardware.',
+              updatedAt: new Date().toISOString()
+            }
+          }
+        };
+      }
+
+      loadInitialState() {
+        try {
+          const raw = localStorage.getItem(this.STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.profile && parsed.config) {
+              return { ...this.getDefaultState(), ...parsed };
+            }
+          }
+        } catch (e) {
+          console.warn('[Store] LocalStorage read failed, initializing defaults.', e);
+        }
+        return this.getDefaultState();
+      }
+
+      save() {
+        try {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
+        } catch (e) {
+          console.error('[Store] LocalStorage write failed.', e);
+        }
+      }
+
+      subscribe(fn) {
+        this.subscribers.push(fn);
+        fn(this.state);
+      }
+
+      notify() {
+        this.save();
+        this.subscribers.forEach(fn => fn(this.state));
+      }
+
+      setState(updater) {
+        if (typeof updater === 'function') {
+          this.state = updater(this.state);
+        } else {
+          this.state = { ...this.state, ...updater };
+        }
+        this.notify();
+      }
+
+      validateImport(data) {
+        if (!data || typeof data !== 'object') return false;
+        if (!data.profile || typeof data.profile.handle !== 'string') return false;
+        if (!data.config || typeof data.config.theme !== 'string') return false;
+        return true;
+      }
+
+      toggleClearedMilestone(id) {
+        cyberAudio.playConfirm();
+        this.setState(s => {
+          const clears = s.profile.stats.clearedMilestones || [];
+          const exists = clears.includes(id);
+          const nextClears = exists ? clears.filter(item => item !== id) : [...clears, id];
+          return {
+            ...s,
+            profile: {
+              ...s.profile,
+              stats: {
+                ...s.profile.stats,
+                clearedMilestones: nextClears,
+                lastUpdated: new Date().toISOString()
+              }
+            }
+          };
+        });
+      }
+
+      toggleBookmark(id) {
+        cyberAudio.playBlip(700, 0.05);
+        this.setState(s => {
+          const marks = s.profile.stats.bookmarkedItems || [];
+          const exists = marks.includes(id);
+          const nextMarks = exists ? marks.filter(item => item !== id) : [...marks, id];
+          return {
+            ...s,
+            profile: {
+              ...s.profile,
+              stats: {
+                ...s.profile.stats,
+                bookmarkedItems: nextMarks,
+                lastUpdated: new Date().toISOString()
+              }
+            }
+          };
+        });
+      }
+
+      saveVaultNote(gameId, content, rating) {
+        cyberAudio.playConfirm();
+        this.setState(s => ({
+          ...s,
+          vaultNotes: {
+            ...s.vaultNotes,
+            [gameId]: {
+              content,
+              rating: Number(rating) || 0,
+              updatedAt: new Date().toISOString()
+            }
+          }
+        }));
+      }
+    }
+
+    const appStore = new Store();
+
+    /**
+     * UI TOAST SYSTEM
+     */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const borderColor = type === 'success' ? 'border-emerald-500' : (type === 'error' ? 'border-rose-500' : 'border-cyan-500');
+      const textColor = type === 'success' ? 'text-emerald-400' : (type === 'error' ? 'text-rose-400' : 'text-cyan-400');
+
+      toast.className = `bg-cyber-950 border ${borderColor} text-slate-200 px-4 py-2.5 rounded shadow-xl text-xs flex items-center gap-2 pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0 font-mono`;
+      toast.innerHTML = `<span class="${textColor}">[SYS]</span> <span>${message}</span>`;
+
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    /**
+     * MODAL INSPECTION CONTROLLER
+     */
+    let activeInspectedGameId = null;
+
+    function openInspectionModal(gameId) {
+      const game = WIKI_DATABASE.milestones.find(m => m.id === gameId);
+      if (!game) return;
+
+      activeInspectedGameId = gameId;
+      cyberAudio.playBlip(600, 0.06);
+
+      document.getElementById('modal-game-title').textContent = game.title.toUpperCase();
+      document.getElementById('modal-game-sub').textContent = `${game.developer.toUpperCase()} // RELEASED ${game.year}`;
+      document.getElementById('modal-game-engine').textContent = game.engine;
+      document.getElementById('modal-game-hardware').textContent = game.targetHardware;
+      document.getElementById('modal-game-genre').textContent = game.genre;
+      document.getElementById('modal-game-consensus').textContent = `${game.consensusRating}% CRITICAL CONSENSUS`;
+      document.getElementById('modal-game-breakthrough').textContent = game.breakthrough;
+      document.getElementById('modal-game-verdict').textContent = game.verdict;
+
+      // Sync user note and rating
+      const existingNote = appStore.state.vaultNotes[gameId];
+      document.getElementById('modal-note-rating').value = existingNote?.rating || '';
+      document.getElementById('modal-note-content').value = existingNote?.content || '';
+
+      // Sync clear status button
+      const isCleared = appStore.state.profile.stats.clearedMilestones.includes(gameId);
+      updateModalClearButtonState(isCleared);
+
+      // Show Backdrop
+      const backdrop = document.getElementById('modal-backdrop');
+      backdrop.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        backdrop.classList.add('opacity-100');
+      });
+      lucide.createIcons();
+    }
+
+    function closeInspectionModal() {
+      const backdrop = document.getElementById('modal-backdrop');
+      backdrop.classList.remove('opacity-100');
+      cyberAudio.playBlip(400, 0.04);
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+        activeInspectedGameId = null;
+      }, 300);
+    }
+
+    function updateModalClearButtonState(isCleared) {
+      const btn = document.getElementById('modal-btn-toggle-cleared');
+      if (isCleared) {
+        btn.className = 'flex items-center gap-2 px-3 py-1.5 rounded text-xs font-mono font-bold transition bg-emerald-950 text-emerald-400 border border-emerald-500/60';
+        btn.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i><span>CLEARED // BEATEN</span>`;
+      } else {
+        btn.className = 'flex items-center gap-2 px-3 py-1.5 rounded text-xs font-mono font-bold transition bg-slate-800 text-slate-400 hover:text-white border border-slate-700';
+        btn.innerHTML = `<i data-lucide="circle" class="w-4 h-4"></i><span>MARK AS CLEARED</span>`;
+      }
+      lucide.createIcons();
+    }
+
+    /**
+     * VIEWPORT CARD RENDERERS
+     */
+    function renderMilestones(filterState, profileState, vaultNotes) {
+      const container = document.getElementById('milestones-grid');
+      const counterBadge = document.getElementById('milestone-counter-badge');
+      if (!container) return;
+
+      const { query, decade, genre } = filterState;
+      const q = query.trim().toLowerCase();
+
+      const filtered = WIKI_DATABASE.milestones.filter(item => {
+        const matchesQuery = !q || 
+          item.title.toLowerCase().includes(q) || 
+          item.developer.toLowerCase().includes(q) || 
+          item.engine.toLowerCase().includes(q) ||
+          item.breakthrough.toLowerCase().includes(q);
+
+        const matchesDecade = decade === 'all' || item.decade === decade;
+        const matchesGenre = genre === 'all' || item.genre.toLowerCase() === genre.toLowerCase();
+
+        return matchesQuery && matchesDecade && matchesGenre;
+      });
+
+      counterBadge.textContent = `Showing ${filtered.length} of ${WIKI_DATABASE.milestones.length} entries`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full border border-dashed border-slate-800 rounded-lg p-10 text-center text-slate-500 text-xs font-mono">
+            NO MILESTONE ENTRIES MATCH SPECIFIED FILTER PARAMETERS.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const isCleared = profileState.stats.clearedMilestones.includes(item.id);
+        const isBookmarked = profileState.stats.bookmarkedItems.includes(item.id);
+        const personalNote = vaultNotes[item.id];
+
+        return `
+          <div class="border border-slate-800 bg-cyber-900/60 hover:border-slate-700 transition rounded p-4 flex flex-col justify-between relative group">
+            <div>
+              <!-- Card Header -->
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="cursor-pointer" onclick="openInspectionModal('${item.id}')">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-white font-display group-hover:text-cyan-400 transition">${item.title}</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono">${item.year}</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">${item.developer} // <span class="text-cyan-400 font-mono">${item.genre}</span></div>
+                </div>
+
+                <!-- Consensus Score Pill -->
+                <div class="flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold font-mono shrink-0">
+                  <i data-lucide="award" class="w-3 h-3 text-cyan-400"></i>
+                  <span>${item.consensusRating}%</span>
+                </div>
+              </div>
+
+              <!-- Engine & Hardware Target -->
+              <div class="bg-cyber-950/80 border border-slate-800/80 rounded p-2 text-[10px] font-mono space-y-1 mb-3">
+                <div class="flex justify-between text-slate-400">
+                  <span class="text-slate-500">ENGINE:</span>
+                  <span class="text-slate-200 truncate ml-2">${item.engine}</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                  <span class="text-slate-500">RIG TARGET:</span>
+                  <span class="text-slate-200 truncate ml-2">${item.targetHardware}</span>
+                </div>
+              </div>
+
+              <!-- Breakthrough Summary -->
+              <p class="text-xs text-slate-300 leading-relaxed mb-3">${item.breakthrough}</p>
+
+              <!-- Personal Note Tag if exists -->
+              ${personalNote ? `
+                <div class="mb-3 p-2 rounded bg-cyan-950/30 border border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+                  <div class="flex items-center justify-between text-[9px] text-cyan-400 font-bold mb-0.5">
+                    <span>MY VAULT NOTE</span>
+                    <span>SCORE: ${personalNote.rating}/100</span>
+                  </div>
+                  <p class="truncate text-slate-300">${personalNote.content}</p>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Card Actions -->
+            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5">
+                <button 
+                  onclick="appStore.toggleClearedMilestone('${item.id}')"
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded text-[10px] font-mono font-bold transition ${isCleared ? 'bg-emerald-950 border border-emerald-500/60 text-emerald-400' : 'bg-slate-800/70 hover:bg-slate-800 text-slate-400 border border-slate-700'}"
+                >
+                  <i data-lucide="${isCleared ? 'check-circle' : 'circle'}" class="w-3.5 h-3.5"></i>
+                  <span>${isCleared ? 'CLEARED' : 'MARK CLEARED'}</span>
+                </button>
+
+                <button 
+                  onclick="openInspectionModal('${item.id}')"
+                  class="flex items-center gap-1 px-2.5 py-1.5 rounded text-[10px] font-mono text-slate-300 hover:text-white bg-slate-800/70 hover:bg-slate-800 border border-slate-700 transition"
+                >
+                  <i data-lucide="scan" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>INSPECT</span>
+                </button>
+              </div>
+
+              <button 
+                onclick="appStore.toggleBookmark('${item.id}')"
+                class="p-1.5 rounded text-xs transition ${isBookmarked ? 'bg-cyan-950 border border-cyan-500/60 text-cyan-400' : 'text-slate-500 hover:text-white hover:bg-slate-800'}"
+                title="${isBookmarked ? 'Remove from Vault' : 'Save to Vault'}"
+              >
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderGenreDebates(profileState) {
+      const container = document.getElementById('genres-grid');
+      if (!container) return;
+
+      container.innerHTML = WIKI_DATABASE.genres.map(item => {
+        const isBookmarked = profileState.stats.bookmarkedItems.includes(item.id);
+
+        return `
+          <div class="border border-slate-800 bg-cyber-900/60 rounded p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-display font-bold text-white tracking-wider">${item.genre}</h3>
+                <div class="flex items-center gap-1 text-[11px] font-mono text-cyan-400">
+                  <span>CONSENSUS:</span>
+                  <span class="font-bold">${item.communityConsensus}%</span>
+                </div>
+              </div>
+
+              <!-- Golden Age vs Modern -->
+              <div class="grid grid-cols-2 gap-2 text-[10px] font-mono bg-cyber-950 p-2.5 rounded border border-slate-800/80 mb-3">
+                <div>
+                  <span class="text-amber-400 font-bold block mb-0.5">GOLDEN AGE:</span>
+                  <span class="text-slate-300">${item.goldenAge}</span>
+                </div>
+                <div>
+                  <span class="text-cyan-400 font-bold block mb-0.5">MODERN STATUS:</span>
+                  <span class="text-slate-300">${item.modernEra}</span>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-300 leading-relaxed mb-3">
+                <span class="text-slate-500 font-mono text-[10px] block mb-1 uppercase tracking-wider">The Community Verdict:</span>
+                ${item.consensusSummary}
+              </div>
+
+              <div class="text-xs text-slate-400 bg-slate-900/40 p-2.5 rounded border border-slate-800/60 mb-4">
+                <span class="text-slate-500 font-mono text-[10px] block mb-1 uppercase tracking-wider">The Central Debate:</span>
+                ${item.keyDebate}
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <div class="flex flex-wrap gap-1.5 items-center">
+                <span class="text-[9px] text-slate-500 uppercase font-mono mr-1">Essential Canon:</span>
+                ${item.canonTitles.map(t => `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">${t}</span>`).join('')}
+              </div>
+
+              <button 
+                onclick="appStore.toggleBookmark('${item.id}')"
+                class="p-1.5 rounded transition ${isBookmarked ? 'bg-cyan-950 border border-cyan-500/60 text-cyan-400' : 'text-slate-500 hover:text-white hover:bg-slate-800'}"
+                title="${isBookmarked ? 'Remove from Vault' : 'Save to Vault'}"
+              >
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderHardwareEras() {
+      const container = document.getElementById('eras-container');
+      if (!container) return;
+
+      container.innerHTML = WIKI_DATABASE.eras.map((era, index) => {
+        return `
+          <div class="border border-slate-800 bg-cyber-900/50 rounded p-4 flex flex-col md:flex-row gap-4 items-start relative">
+            <div class="w-8 h-8 rounded bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-mono font-bold text-xs shrink-0">
+              0${index + 1}
+            </div>
+            <div class="flex-1">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
+                <h3 class="text-xs font-display font-bold text-white tracking-wider">${era.title}</h3>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-400 shrink-0">${era.period}</span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-400 mb-2">
+                <span class="text-slate-500">SIGNIFICANT SILICON:</span> ${era.breakthroughChips}
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">${era.summary}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderVault(profileState, vaultNotes) {
+      const container = document.getElementById('vault-items-grid');
+      const emptyState = document.getElementById('vault-empty-state');
+      if (!container || !emptyState) return;
+
+      const bookmarked = profileState.stats.bookmarkedItems || [];
+      const cleared = profileState.stats.clearedMilestones || [];
+
+      const savedMilestones = WIKI_DATABASE.milestones.filter(m => bookmarked.includes(m.id) || cleared.includes(m.id) || !!vaultNotes[m.id]);
+      const savedGenres = WIKI_DATABASE.genres.filter(g => bookmarked.includes(g.id));
+
+      if (savedMilestones.length === 0 && savedGenres.length === 0) {
+        emptyState.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      const milestoneCards = savedMilestones.map(m => {
+        const isCleared = cleared.includes(m.id);
+        const note = vaultNotes[m.id];
+
+        return `
+          <div class="border border-slate-800 bg-cyber-900/70 rounded p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold font-display text-white">${m.title} (${m.year})</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded ${isCleared ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' : 'bg-slate-800 text-slate-400'} font-mono uppercase font-bold">
+                  ${isCleared ? 'CLEARED' : 'BOOKMARKED'}
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mb-3">${m.breakthrough}</p>
+              
+              ${note ? `
+                <div class="mb-3 p-2 rounded bg-cyan-950/30 border border-cyan-500/30 text-[10px] text-cyan-300 font-mono">
+                  <div class="flex items-center justify-between text-cyan-400 font-bold mb-0.5">
+                    <span>RECORDED RETROSPECTIVE:</span>
+                    <span>${note.rating}/100</span>
+                  </div>
+                  <p class="text-slate-300 leading-snug">${note.content}</p>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+              <button onclick="openInspectionModal('${m.id}')" class="text-[10px] font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
+                <i data-lucide="edit-3" class="w-3 h-3"></i>
+                <span>Edit Notes</span>
+              </button>
+              <button 
+                onclick="appStore.toggleBookmark('${m.id}')"
+                class="text-[10px] text-rose-400 hover:text-rose-300 font-mono"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      const genreCards = savedGenres.map(g => {
+        return `
+          <div class="border border-slate-800 bg-cyber-900/70 rounded p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold font-display text-white">${g.genre}</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-500/40 font-mono uppercase font-bold">DEBATE</span>
+              </div>
+              <p class="text-xs text-slate-400 mb-3">${g.consensusSummary}</p>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+              <span class="text-[10px] font-mono text-cyan-400">Consensus: ${g.communityConsensus}%</span>
+              <button 
+                onclick="appStore.toggleBookmark('${g.id}')"
+                class="text-[10px] text-rose-400 hover:text-rose-300 font-mono"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = [...milestoneCards, ...genreCards].join('');
+    }
+
+    /**
+     * DOM INITIALIZATION & EVENT WIRING
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+
+      // UI Element Selectors
+      const crtOverlay = document.getElementById('crt-overlay');
+      const btnToggleScanlines = document.getElementById('btn-toggle-scanlines');
+      const btnToggleSound = document.getElementById('btn-toggle-sound');
+      const iconSound = document.getElementById('icon-sound');
+      const selectTheme = document.getElementById('select-theme');
+      const telemetryClock = document.getElementById('telemetry-clock');
+      
+      const drawerBackdrop = document.getElementById('drawer-backdrop');
+      const profileDrawer = document.getElementById('profile-drawer');
+      const btnOpenProfile = document.getElementById('btn-open-profile');
+      const btnCloseProfileDrawer = document.getElementById('btn-close-profile-drawer');
+      
+      // Filter & Search Controls
+      const inputWikiSearch = document.getElementById('input-wiki-search');
+      const selectDecade = document.getElementById('select-decade');
+      const selectGenre = document.getElementById('select-genre');
+      const btnResetFilters = document.getElementById('btn-reset-filters');
+
+      // Profile form inputs
+      const inputHandle = document.getElementById('input-profile-handle');
+      const selectTitle = document.getElementById('select-profile-title');
+      const selectEra = document.getElementById('select-profile-era');
+      const inputCpu = document.getElementById('input-profile-cpu');
+      const inputGpu = document.getElementById('input-profile-gpu');
+      const inputPeripheral = document.getElementById('input-profile-peripheral');
+      const btnSaveProfile = document.getElementById('btn-save-profile');
+      const btnResetProfile = document.getElementById('btn-reset-profile');
+      const btnExportProfile = document.getElementById('btn-export-profile');
+      const inputImportJson = document.getElementById('input-import-json');
+
+      // Top Chip & Sidebar Elements
+      const profileChipHandle = document.getElementById('profile-chip-handle');
+      const profileChipTitle = document.getElementById('profile-chip-title');
+      const sidebarSpecsDisplay = document.getElementById('sidebar-specs-display');
+      const sidebarClearedCount = document.getElementById('sidebar-cleared-count');
+      const sidebarOperativeAffinity = document.getElementById('sidebar-operative-affinity');
+
+      // Preview Card Elements inside Drawer
+      const previewHandle = document.getElementById('preview-handle');
+      const previewTitle = document.getElementById('preview-title');
+      const previewAffinityTag = document.getElementById('preview-affinity-tag');
+      const previewAvatarBadge = document.getElementById('preview-avatar-badge');
+      const previewClearedCount = document.getElementById('preview-cleared-count');
+      const previewBookmarkCount = document.getElementById('preview-bookmark-count');
+
+      // Inspection Modal Elements
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalBtnSaveNote = document.getElementById('modal-btn-save-note');
+      const modalBtnToggleCleared = document.getElementById('modal-btn-toggle-cleared');
+      const modalNoteRating = document.getElementById('modal-note-rating');
+      const modalNoteContent = document.getElementById('modal-note-content');
+
+      // 8 Available Avatar Presets
+      const availableAvatars = [
+        'terminal', 'cpu', 'crosshair', 'shield', 
+        'gamepad-2', 'flame', 'zap', 'disc'
+      ];
+      const avatarContainer = document.getElementById('avatar-picker-container');
+
+      availableAvatars.forEach(glyph => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.glyph = glyph;
+        btn.className = 'p-2.5 rounded border border-slate-800 bg-cyber-900 flex items-center justify-center hover:border-cyan-500 transition avatar-select-btn';
+        btn.innerHTML = `<i data-lucide="${glyph}" class="w-4 h-4 text-slate-400"></i>`;
+        
+        btn.addEventListener('click', () => {
+          cyberAudio.playBlip(900, 0.03);
+          document.querySelectorAll('.avatar-select-btn').forEach(b => {
+            b.classList.remove('border-cyan-500', 'bg-cyan-950/60');
+            b.querySelector('svg')?.classList.replace('text-cyan-400', 'text-slate-400');
+          });
+          btn.classList.add('border-cyan-500', 'bg-cyan-950/60');
+          btn.querySelector('svg')?.classList.replace('text-slate-400', 'text-cyan-400');
+          
+          appStore.setState(s => ({
+            ...s,
+            profile: { ...s.profile, avatarId: glyph }
+          }));
+        });
+        avatarContainer.appendChild(btn);
+      });
+      lucide.createIcons();
+
+      // Telemetry Clock
+      function updateClock() {
+        const now = new Date();
+        telemetryClock.textContent = now.toTimeString().split(' ')[0] + ' LOC';
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // Drawer Open/Close Helpers
+      function openDrawer() {
+        cyberAudio.playBlip(550, 0.05);
+        drawerBackdrop.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          drawerBackdrop.classList.add('opacity-100');
+          profileDrawer.classList.remove('translate-x-full');
+        });
+      }
+
+      function closeDrawer() {
+        cyberAudio.playBlip(420, 0.04);
+        drawerBackdrop.classList.remove('opacity-100');
+        profileDrawer.classList.add('translate-x-full');
+        setTimeout(() => {
+          drawerBackdrop.classList.add('hidden');
+        }, 300);
+      }
+
+      btnOpenProfile.addEventListener('click', openDrawer);
+      btnCloseProfileDrawer.addEventListener('click', closeDrawer);
+      drawerBackdrop.addEventListener('click', closeDrawer);
+
+      // Modal Handlers
+      btnCloseModal.addEventListener('click', closeInspectionModal);
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) closeInspectionModal();
+      });
+
+      modalBtnToggleCleared.addEventListener('click', () => {
+        if (!activeInspectedGameId) return;
+        appStore.toggleClearedMilestone(activeInspectedGameId);
+        const isCleared = appStore.state.profile.stats.clearedMilestones.includes(activeInspectedGameId);
+        updateModalClearButtonState(isCleared);
+      });
+
+      modalBtnSaveNote.addEventListener('click', () => {
+        if (!activeInspectedGameId) return;
+        appStore.saveVaultNote(activeInspectedGameId, modalNoteContent.value.trim(), modalNoteRating.value);
+        showToast('Personal retrospective preserved to local vault.', 'success');
+        closeInspectionModal();
+      });
+
+      // Escape Key Trap for Drawer and Modal
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!modalBackdrop.classList.contains('hidden')) {
+            closeInspectionModal();
+          } else {
+            closeDrawer();
+          }
+        }
+      });
+
+      // Tab Navigation
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          cyberAudio.playBlip(720, 0.03);
+          const targetTab = btn.getAttribute('data-tab');
+          appStore.setState(s => ({
+            ...s,
+            config: { ...s.config, activeTab: targetTab }
+          }));
+        });
+      });
+
+      // Filter and Search Handlers
+      inputWikiSearch.addEventListener('input', (e) => {
+        appStore.setState(s => ({
+          ...s,
+          wikiFilters: { ...s.wikiFilters, query: e.target.value }
+        }));
+      });
+
+      selectDecade.addEventListener('change', (e) => {
+        cyberAudio.playBlip(680, 0.03);
+        appStore.setState(s => ({
+          ...s,
+          wikiFilters: { ...s.wikiFilters, decade: e.target.value }
+        }));
+      });
+
+      selectGenre.addEventListener('change', (e) => {
+        cyberAudio.playBlip(680, 0.03);
+        appStore.setState(s => ({
+          ...s,
+          wikiFilters: { ...s.wikiFilters, genre: e.target.value }
+        }));
+      });
+
+      btnResetFilters.addEventListener('click', () => {
+        cyberAudio.playConfirm();
+        inputWikiSearch.value = '';
+        selectDecade.value = 'all';
+        selectGenre.value = 'all';
+        appStore.setState(s => ({
+          ...s,
+          wikiFilters: { query: '', decade: 'all', genre: 'all' }
+        }));
+        showToast('All search and taxonomy filters reset.');
+      });
+
+      // Scanline Toggle
+      btnToggleScanlines.addEventListener('click', () => {
+        cyberAudio.playBlip(800, 0.04);
+        appStore.setState(s => ({
+          ...s,
+          config: { ...s.config, scanlines: !s.config.scanlines }
+        }));
+      });
+
+      // Audio Sound Toggle
+      btnToggleSound.addEventListener('click', () => {
+        cyberAudio.enabled = !cyberAudio.enabled;
+        if (cyberAudio.enabled) {
+          cyberAudio.playConfirm();
+          btnToggleSound.classList.replace('text-slate-600', 'text-cyan-400');
+          showToast('Cyber audio synthesizer enabled.');
+        } else {
+          btnToggleSound.classList.replace('text-cyan-400', 'text-slate-600');
+          showToast('Audio synthesizer muted.');
+        }
+      });
+
+      // Theme Selector
+      selectTheme.addEventListener('change', (e) => {
+        cyberAudio.playConfirm();
+        appStore.setState(s => ({
+          ...s,
+          config: { ...s.config, theme: e.target.value }
+        }));
+      });
+
+      // Save Profile Action
+      btnSaveProfile.addEventListener('click', () => {
+        cyberAudio.playConfirm();
+        appStore.setState(s => ({
+          ...s,
+          profile: {
+            ...s.profile,
+            handle: inputHandle.value.trim() || 'Spectre_99',
+            title: selectTitle.value,
+            preferredEra: selectEra.value,
+            rigSpecs: {
+              cpu: inputCpu.value.trim(),
+              gpu: inputGpu.value.trim(),
+              peripheral: inputPeripheral.value.trim()
+            },
+            stats: {
+              ...s.profile.stats,
+              lastUpdated: new Date().toISOString()
+            }
+          }
+        }));
+        showToast('Operative Dossier updated and committed to memory.', 'success');
+        closeDrawer();
+      });
+
+      // Reset Profile Action
+      btnResetProfile.addEventListener('click', () => {
+        if (confirm('Revert operative profile to default factory state? All bookmarks, notes, and clears will be reset.')) {
+          cyberAudio.playConfirm();
+          const defaults = appStore.getDefaultState();
+          appStore.setState(s => ({
+            ...s,
+            profile: defaults.profile,
+            vaultNotes: defaults.vaultNotes
+          }));
+          showToast('Dossier restored to factory baseline.');
+        }
+      });
+
+      // Export JSON Backup
+      btnExportProfile.addEventListener('click', () => {
+        cyberAudio.playConfirm();
+        const payload = {
+          ...appStore.state,
+          exportMetadata: {
+            exportedAt: new Date().toISOString(),
+            client: 'OVERCLOCK // PC Enthusiast Hub'
+          }
+        };
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute('href', dataStr);
+        downloadAnchor.setAttribute('download', `overclock_operative_${appStore.state.profile.handle}_${Date.now()}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        showToast('Dossier snapshot exported successfully.', 'success');
+      });
+
+      // Import JSON Backup with Strict Verification
+      inputImportJson.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const imported = JSON.parse(event.target.result);
+            if (appStore.validateImport(imported)) {
+              appStore.setState(() => ({
+                ...appStore.getDefaultState(),
+                ...imported
+              }));
+              cyberAudio.playConfirm();
+              showToast('Dossier and vault restored successfully!', 'success');
+            } else {
+              throw new Error('Schema validation failed');
+            }
+          } catch (err) {
+            showToast('Invalid backup file. Import rejected.', 'error');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      // REACTIVE STORE OBSERVER
+      appStore.subscribe((state) => {
+        // 1. Theme and Scanlines
+        document.documentElement.setAttribute('data-theme', state.config.theme);
+        selectTheme.value = state.config.theme;
+
+        if (state.config.scanlines) {
+          crtOverlay.classList.remove('opacity-0');
+          crtOverlay.classList.add('opacity-70');
+          btnToggleScanlines.classList.add('border-cyan-500/50', 'text-cyan-400');
+        } else {
+          crtOverlay.classList.remove('opacity-70');
+          crtOverlay.classList.add('opacity-0');
+          btnToggleScanlines.classList.remove('border-cyan-500/50', 'text-cyan-400');
+        }
+
+        // 2. Tab Navigation
+        tabButtons.forEach(btn => {
+          const tab = btn.getAttribute('data-tab');
+          if (tab === state.config.activeTab) {
+            btn.className = 'tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-white bg-cyber-800 border-l-2 border-cyan-500 transition';
+            btn.querySelector('svg')?.classList.add('text-cyan-400');
+          } else {
+            btn.className = 'tab-btn flex-1 md:flex-none flex items-center gap-3 px-3 py-2.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-cyber-900 transition';
+            btn.querySelector('svg')?.classList.remove('text-cyan-400');
+          }
+        });
+
+        // 3. Tab Panes
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+          if (pane.id === `tab-content-${state.config.activeTab}`) {
+            pane.classList.remove('hidden');
+          } else {
+            pane.classList.add('hidden');
+          }
+        });
+
+        // 4. Dossier Form Inputs Sync
+        inputHandle.value = state.profile.handle;
+        selectTitle.value = state.profile.title;
+        selectEra.value = state.profile.preferredEra || '1990s Shareware & Glide';
+        inputCpu.value = state.profile.rigSpecs?.cpu || '';
+        inputGpu.value = state.profile.rigSpecs?.gpu || '';
+        inputPeripheral.value = state.profile.rigSpecs?.peripheral || '';
+
+        // 5. Header Chip & Previews
+        profileChipHandle.textContent = state.profile.handle;
+        profileChipTitle.textContent = state.profile.title;
+        previewHandle.textContent = state.profile.handle;
+        previewTitle.textContent = state.profile.title;
+        previewAffinityTag.textContent = `Era: ${state.profile.preferredEra || '1990s Shareware & Glide'}`;
+
+        const avatarGlyph = state.profile.avatarId || 'terminal';
+        const avatarEl = document.getElementById('profile-chip-avatar');
+        avatarEl.innerHTML = `<i data-lucide="${avatarGlyph}" class="w-3.5 h-3.5"></i>`;
+        previewAvatarBadge.innerHTML = `<i data-lucide="${avatarGlyph}" class="w-6 h-6"></i>`;
+
+        // 6. Highlight Active Avatar in Picker
+        document.querySelectorAll('.avatar-select-btn').forEach(b => {
+          if (b.dataset.glyph === avatarGlyph) {
+            b.classList.add('border-cyan-500', 'bg-cyan-950/60');
+            b.querySelector('svg')?.classList.replace('text-slate-400', 'text-cyan-400');
+          } else {
+            b.classList.remove('border-cyan-500', 'bg-cyan-950/60');
+            b.querySelector('svg')?.classList.replace('text-cyan-400', 'text-slate-400');
+          }
+        });
+
+        // 7. Sidebar & Counters
+        const cpuShort = state.profile.rigSpecs?.cpu ? state.profile.rigSpecs.cpu.split(' ')[0] + ' ' + (state.profile.rigSpecs.cpu.split(' ')[1] || '') : 'None';
+        sidebarSpecsDisplay.textContent = `Rig: ${cpuShort} // ${state.profile.rigSpecs?.gpu || 'Standard'}`;
+        
+        const clearedCount = state.profile.stats?.clearedMilestones?.length || 0;
+        const bookmarkedCount = state.profile.stats?.bookmarkedItems?.length || 0;
+        
+        sidebarClearedCount.textContent = `${clearedCount} Titles`;
+        previewClearedCount.textContent = clearedCount;
+        previewBookmarkCount.textContent = bookmarkedCount;
+        sidebarOperativeAffinity.textContent = state.profile.preferredEra ? state.profile.preferredEra.split(' ')[0] + ' ' + (state.profile.preferredEra.split(' ')[1] || '') : '1990s Glide';
+
+        // 8. Render All Content Panes
+        renderMilestones(state.wikiFilters, state.profile, state.vaultNotes);
+        renderGenreDebates(state.profile);
+        renderHardwareEras();
+        renderVault(state.profile, state.vaultNotes);
+
+        lucide.createIcons();
+      });
+    });
+  </script>
+</body>
+</html>
