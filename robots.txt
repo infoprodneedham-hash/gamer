@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://gamerzone.app/sitemap.xml
