@@ -1369,8 +1369,7 @@
   async function initAI() {
     try {
       // Lightweight, ultra-fast model (~350MB, cached permanently in visitor's browser)
-      const selectedModel = "SmolLM2-360M-Instruct-q4f16_1-MLC";
-      
+const selectedModel = "Llama-3.2-1B-Instruct-q4f16_1-MLC";      
       engine = await CreateMLCEngine(selectedModel, {
         initProgressCallback: (report) => {
           if (report.text.includes("Loading")) {
