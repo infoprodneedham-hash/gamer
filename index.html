@@ -2020,16 +2020,7 @@
       transform: translateY(-2px) !important;
       box-shadow: 0 0 22px rgba(6, 182, 212, 0.8) !important;
     }
-    #cf-ai-backdrop {
-      display: none;
-      position: fixed !important;
-      inset: 0 !important;
-      background: rgba(0, 0, 0, 0.75) !important;
-      backdrop-filter: blur(4px);
-      z-index: 1000000 !important;
-      opacity: 0;
-      transition: opacity 0.25s ease-out;
-    }
+   
     #cf-ai-drawer {
       display: none;
       position: fixed !important;
@@ -2038,7 +2029,12 @@
       bottom: 0 !important;
       height: 100% !important;
       width: 100% !important;
-      max-width: 440px !important;
+      max-w#cf-ai-backdrop {
+  pointer-events: none;
+}
+#cf-ai-backdrop.active {
+  pointer-events: auto;
+}idth: 440px !important;
       background: #05070a !important;
       border-left: 1px solid #1e293b !important;
       z-index: 1000001 !important;
@@ -2055,13 +2051,7 @@
   </style>
 
   <!-- Button is outside, anchored directly to viewport -->
-  <button 
-    id="cf-ai-toggle" 
-    type="button" 
-    aria-label="Open AI Assistant" 
-    onclick="toggleAiDrawer(true)">
-    <span>[AI TERMINAL]</span>
-  </button>
+  <button id="cf-ai-toggle" type="button" onclick="event.stopPropagation(); toggleAiDrawer(true)">
 
   <!-- Screen Backdrop Overlay -->
   <div id="cf-ai-backdrop" onclick="toggleAiDrawer(false)"></div>
