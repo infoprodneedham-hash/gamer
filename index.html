@@ -1,107 +1,1320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Chat Stream Test</title>
-</head>
-<body style="font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px;">
-
-  <h2>Minimal Chat Stream Test</h2>
-
-  <!-- 1. The Output Area -->
-  <div id="messages" style="border: 1px solid #ccc; height: 350px; overflow-y: auto; padding: 12px; margin-bottom: 12px; white-space: pre-wrap;"></div>
-
-  <!-- 2. The Input Form -->
-  <form id="chat-form" style="display: flex; gap: 8px;">
-    <input 
-      type="text" 
-      id="chat-input" 
-      placeholder="Type a message..." 
-      autocomplete="off" 
-      required 
-      style="flex: 1; padding: 8px;"
-    />
-    <button type="submit" id="send-btn" style="padding: 8px 16px;">Send</button>
-  </form>
-
-  <!-- 3. The Stream Reader Script -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PC Gaming Through the Decades: Best-Sellers & Milestones</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script>
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
-    const messages = document.getElementById('messages');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text) return;
-
-      // Disable inputs during inference
-      input.value = '';
-      input.disabled = true;
-      sendBtn.disabled = true;
-
-      // Append user line
-      appendLine('User: ' + text);
-
-      // Create an empty AI line that we will append tokens to
-      const botSpan = appendLine('AI: ');
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userMessage: text })
-        });
-
-        if (!response.ok) {
-          throw new Error('Server returned HTTP ' + response.status);
-        }
-
-        // Read the streaming chunks
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const raw = line.slice(6).trim();
-              if (raw === '[DONE]') break;
-              try {
-                const data = JSON.parse(raw);
-                if (data.response) {
-                  botSpan.textContent += data.response;
-                  messages.scrollTop = messages.scrollHeight;
-                }
-              } catch (_) {}
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+            },
+            retro: {
+              cyan: '#00f2fe',
+              magenta: '#f355da',
+              amber: '#f59e0b',
+              purple: '#8b5cf6',
+              green: '#22c55e',
             }
           }
         }
-      } catch (err) {
-        botSpan.textContent += '[Error: ' + err.message + ']';
-      } finally {
-        input.disabled = false;
-        sendBtn.disabled = false;
-        input.focus();
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbars and styling enhancements */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .neon-glow-cyan {
+      box-shadow: 0 0 20px -3px rgba(0, 242, 254, 0.25);
+    }
+    .neon-border {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.25s ease;
+    }
+    .neon-border:hover {
+      border-color: rgba(52, 211, 153, 0.4);
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-black">
+
+  <!-- Header & Hero -->
+  <header class="relative border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-indigo-600 flex items-center justify-center text-slate-950 shadow-lg shadow-emerald-500/20">
+          <i data-lucide="monitor" class="w-6 h-6 stroke-[2.2]"></i>
+        </div>
+        <div>
+          <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-emerald-400 bg-clip-text text-transparent">
+            PC Gaming Through The Decades
+          </h1>
+          <p class="text-xs text-slate-400">Best-Sellers, Technological Milestones & Historical Turning Points</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Stats & CSV Export -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="exportCsvBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs sm:text-sm font-medium transition text-slate-200 hover:text-white shadow-sm" title="Download catalog as CSV file">
+          <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+          <span>Export CSV</span>
+        </button>
+        <button id="toggleTechSummaryBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-medium transition">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Hardware Tech Timeline</span>
+          <span class="sm:hidden">Hardware</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- Interactive Hardware Timeline Accordion (Collapsible) -->
+    <section id="techSummarySection" class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 lg:p-6 backdrop-blur transition-all">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+          </span>
+          <h2 class="font-display text-base font-semibold text-slate-100">Evolution of PC Tech & Hardware Breakthroughs</h2>
+        </div>
+        <span class="text-xs text-slate-400">The architecture behind the hits</span>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" id="techMilestonesGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Controls Bar: Decade Timeline Navigation & Filters -->
+    <div class="space-y-4">
+      <!-- Decades Jump Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar" id="decadeTabsContainer">
+        <!-- JS rendered decade buttons -->
+      </div>
+
+      <!-- Search, Genre Filter, and Sort Controls -->
+      <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 shadow-xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        
+        <!-- Search Field -->
+        <div class="relative flex-grow max-w-md">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by title, developer, publisher, or tags..." 
+            class="w-full pl-10 pr-9 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+          >
+          <button id="clearSearchBtn" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 hidden">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Genre Dropdown -->
+          <div class="flex items-center gap-1.5 text-xs text-slate-400">
+            <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+            <label for="genreSelect" class="sr-only">Genre Filter</label>
+            <select id="genreSelect" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="ALL">All Genres</option>
+              <option value="RPG">RPG</option>
+              <option value="Strategy">Strategy / RTS</option>
+              <option value="FPS">FPS / Shooter</option>
+              <option value="Simulation">Simulation / Sim</option>
+              <option value="Sandbox/Survival">Sandbox / Survival</option>
+              <option value="Action">Action / Adventure</option>
+              <option value="Puzzle">Puzzle</option>
+            </select>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="flex items-center gap-1.5 text-xs text-slate-400">
+            <i data-lucide="arrow-down-up" class="w-3.5 h-3.5"></i>
+            <label for="sortSelect" class="sr-only">Sort By</label>
+            <select id="sortSelect" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="sales-desc">Top Sales / Peak Players</option>
+              <option value="year-asc">Release Year (Oldest First)</option>
+              <option value="year-desc">Release Year (Newest First)</option>
+              <option value="title-asc">Title (A - Z)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filter Status & Count -->
+    <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 px-1">
+      <div id="filterCount">Showing all titles</div>
+      <div id="activeTags" class="flex items-center gap-1.5"></div>
+    </div>
+
+    <!-- Games Grid -->
+    <section>
+      <div id="gamesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden py-16 text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500">
+          <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-base font-semibold text-slate-300">No games found</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try adjusting your decade filter, search query, or genre selection.</p>
+        <button id="resetFiltersBtn" class="mt-4 px-4 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 text-xs font-medium transition">
+          Reset All Filters
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Detailed Game Modal Popup -->
+  <div id="gameModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+    <div class="relative w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header Bar -->
+      <div class="relative h-28 sm:h-36 bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/60 p-6 flex flex-col justify-end border-b border-slate-800">
+        <button id="closeModalBtn" class="absolute top-4 right-4 p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="flex items-center gap-2 mb-1">
+          <span id="modalDecadeBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-800 text-emerald-400 border border-emerald-500/30"></span>
+          <span id="modalGenreBadge" class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800/60 text-slate-300 border border-slate-700"></span>
+        </div>
+        <h3 id="modalTitle" class="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight"></h3>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+        <!-- Quick stats grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Release Year</span>
+            <span id="modalYear" class="text-sm font-semibold text-slate-200"></span>
+          </div>
+          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Estimated Sales / Impact</span>
+            <span id="modalSales" class="text-sm font-semibold text-emerald-400"></span>
+          </div>
+          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Developer</span>
+            <span id="modalDev" class="text-sm font-semibold text-slate-200 truncate block"></span>
+          </div>
+          <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider block">Publisher</span>
+            <span id="modalPublisher" class="text-sm font-semibold text-slate-200 truncate block"></span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-emerald-400"></i>
+            Overview & Gameplay
+          </h4>
+          <p id="modalDescription" class="text-slate-300 text-sm sm:text-base leading-relaxed bg-slate-950/40 p-4 rounded-xl border border-slate-800/80"></p>
+        </div>
+
+        <!-- Cultural Impact & Technical Innovations -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-emerald-950/20 border border-emerald-500/20 p-4 rounded-xl">
+            <h5 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5"></i>
+              Cultural & Commercial Impact
+            </h5>
+            <p id="modalImpact" class="text-xs sm:text-sm text-slate-300 leading-normal"></p>
+          </div>
+          <div class="bg-cyan-950/20 border border-cyan-500/20 p-4 rounded-xl">
+            <h5 class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-2 flex items-center gap-1.5">
+              <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+              Tech & Engine Breakthroughs
+            </h5>
+            <p id="modalTech" class="text-xs sm:text-sm text-slate-300 leading-normal"></p>
+          </div>
+        </div>
+
+        <!-- Notable Tags -->
+        <div>
+          <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Key Themes & Attributes:</span>
+          <div id="modalTags" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
+        <button id="modalCloseActionBtn" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-semibold transition">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>Celebrating over four decades of PC gaming innovation, shareware pioneers, and digital distribution revolutions.</p>
+      <p class="text-slate-400 font-mono">Curated Dataset &bull; 1980s &ndash; 2020s</p>
+    </div>
+  </footer>
+
+  <!-- Application Script & Dataset -->
+  <script>
+    // -------------------------------------------------------------
+    // Comprehensive Curated Dataset of PC Milestones & Best-Sellers
+    // -------------------------------------------------------------
+    const gamesData = [
+      // 1980s
+      {
+        id: "tetris-1984",
+        title: "Tetris",
+        decade: "1980s",
+        releaseYear: 1984,
+        developer: "Alexey Pajitnov",
+        publisher: "Spectrum HoloByte / Various",
+        genre: "Puzzle",
+        salesMetric: "Over 200M+ across all versions (Millions of early MS-DOS copies)",
+        salesRankValue: 200,
+        tags: ["Block Puzzle", "USSR", "MS-DOS Port", "Addictive", "Math Genius"],
+        description: "Programmed originally by Russian mathematician Alexey Pajitnov on an Elektronika 60 before being ported to IBM PC MS-DOS, Tetris redefined geometric puzzle logic and became one of the most widely ported pieces of software in human history.",
+        impact: "Proved that simple, mathematically elegant gameplay could captivate audiences across the globe regardless of language barriers or graphical limits.",
+        tech: "Ported natively from Pascal to IBM PC assembly, setting benchmarks for frame-rate pacing on basic monochrome and CGA monitors."
+      },
+      {
+        id: "simcity-1989",
+        title: "SimCity",
+        decade: "1980s",
+        releaseYear: 1989,
+        developer: "Maxis (Will Wright)",
+        publisher: "Maxis / Broderbund",
+        genre: "Simulation",
+        salesMetric: "Over 2M+ units on PC/Amiga",
+        salesRankValue: 2,
+        tags: ["City Builder", "Simulation", "System Dynamics", "Urban Planning"],
+        description: "Will Wright discovered that building maps in a level editor was more fun than playing the game itself, giving birth to the premier non-linear urban simulation that birthed an entire genre and franchise.",
+        impact: "Challenged the industry convention that games must have win-and-lose states, inaugurating the 'software toy' revolution.",
+        tech: "Implemented multi-layered cellular automata algorithms to simulate traffic grids, commercial zones, crime rates, and pollution matrices in real-time."
+      },
+      {
+        id: "prince-of-persia-1989",
+        title: "Prince of Persia",
+        decade: "1980s",
+        releaseYear: 1989,
+        developer: "Jordan Mechner",
+        publisher: "Broderbund",
+        genre: "Action",
+        salesMetric: "Over 2M+ copies across PC & home microcomputers",
+        salesRankValue: 2,
+        tags: ["Cinematic Platformer", "Rotoscoping", "Trap Navigation", "Swashbuckler"],
+        description: "A landmark cinematic platformer set in medieval Persia. Players had exactly 60 minutes to escape subterranean dungeons, bypass deadly blade traps, and defeat the grand vizier Jaffar.",
+        impact: "Pioneered fluid character movement in digital platforming and inspired future legendary franchises such as Tomb Raider and Assassin's Creed.",
+        tech: "Revolutionized computer animation through rotoscoping—recording VHS footage of the creator's younger brother running and leaping, then tracing individual frames by hand."
+      },
+      {
+        id: "ms-flight-sim-1982",
+        title: "Microsoft Flight Simulator 1.0",
+        decade: "1980s",
+        releaseYear: 1982,
+        developer: "subLOGIC / Bruce Artwick",
+        publisher: "Microsoft",
+        genre: "Simulation",
+        salesMetric: "Standard test benchmark on PC (Millions of copies through OEM bundles)",
+        salesRankValue: 5,
+        tags: ["Avionics", "Simulator", "Benchmark", "CGA Graphics"],
+        description: "One of the longest-running PC software series in history, Bruce Artwick's simulator pioneered realistic aerodynamics and navigation instruments for commercial personal computers.",
+        impact: "Served as the definitive IBM PC compatibility benchmark; if an IBM clone could boot Flight Simulator without crashing, it was truly 100% IBM compatible.",
+        tech: "Engineered real-time vector graphics capable of rendering cockpits and runway wireframes on early 4.77 MHz Intel 8088 processors."
+      },
+      {
+        id: "kings-quest-1984",
+        title: "King's Quest: Quest for the Crown",
+        decade: "1980s",
+        releaseYear: 1984,
+        developer: "Sierra On-Line (Roberta Williams)",
+        publisher: "IBM / Sierra On-Line",
+        genre: "Action",
+        salesMetric: "Over 500K+ PC copies (Historic high for early graphic adventures)",
+        salesRankValue: 0.5,
+        tags: ["Adventure", "Parser", "Animated Fantasy", "Sierra AGI"],
+        description: "Commissioned by IBM to showcase the PCjr's 16-color graphics, Roberta Williams crafted a whimsical fantasy quest featuring Sir Graham, bridging text parsers with colorful animated sprites.",
+        impact: "Established Sierra On-Line as an industry giant and set the template for graphic adventure games for the next decade.",
+        tech: "Developed the Adventure Game Interpreter (AGI) engine, permitting simulated three-dimensional depth where characters could walk behind and in front of objects."
+      },
+      {
+        id: "oregon-trail-1985",
+        title: "The Oregon Trail",
+        decade: "1980s",
+        releaseYear: 1985,
+        developer: "MECC (Don Rawitsch et al.)",
+        publisher: "MECC",
+        genre: "Simulation",
+        salesMetric: "Over 65M+ lifetime educational & home units",
+        salesRankValue: 65,
+        tags: ["Edutainment", "Resource Management", "Dysentery", "Survival"],
+        description: "The quintessential educational simulation designed to teach school children the realities of 19th-century pioneer life on the trail to the Willamette Valley.",
+        impact: "Became an indelible cultural touchstone for millions of school children and a gold standard for edutainment and survival resource management.",
+        tech: "Early algorithmic random event modeling balancing caloric intake, wagon axle degradation, river depths, and bacterial epidemics."
+      },
+      {
+        id: "elite-1984",
+        title: "Elite",
+        decade: "1980s",
+        releaseYear: 1984,
+        developer: "David Braben & Ian Bell",
+        publisher: "Acornsoft / Firebird",
+        genre: "Simulation",
+        salesMetric: "Over 1M+ across microcomputers & DOS ports",
+        salesRankValue: 1,
+        tags: ["Space Trading", "Open World", "Procedural Generation", "Wireframe 3D"],
+        description: "An awe-inspiring space trading and combat simulation that gave players a Cobra Mk III spaceship and complete freedom across an immense galaxy of planetary systems.",
+        impact: "Laid the blueprint for modern sandbox space titles including EVE Online, Wing Commander, and No Man's Sky.",
+        tech: "Invented ingenious pseudo-random Fibonacci number sequence generators to generate 8 entire galaxies with 256 unique star systems inside just 32 kilobytes of memory."
+      },
+
+      // 1990s
+      {
+        id: "myst-1993",
+        title: "Myst",
+        decade: "1990s",
+        releaseYear: 1993,
+        developer: "Cyan Worlds (Rand & Robyn Miller)",
+        publisher: "Broderbund",
+        genre: "Puzzle",
+        salesMetric: "Over 6M+ PC copies (Best-selling PC game of all time until The Sims)",
+        salesRankValue: 6,
+        tags: ["CD-ROM Killer App", "HyperCard", "Atmospheric", "Prerendered 3D"],
+        description: "A surreal, atmospheric first-person puzzle adventure set on an enigmatic deserted island, featuring rich ambient soundscapes, mechanical puzzles, and intriguing journal lore.",
+        impact: "Served as the definitive killer application for CD-ROM drives in households, dramatically driving PC multimedia hardware adoption worldwide.",
+        tech: "Built using StrataVision 3D modeling rendered over months into 2,500 photorealistic stills, integrated with Apple QuickTime video and HyperCard scripting."
+      },
+      {
+        id: "doom-1993",
+        title: "Doom",
+        decade: "1990s",
+        releaseYear: 1993,
+        developer: "id Software (Carmack, Romero, Hall, Petersen)",
+        publisher: "id Software",
+        genre: "FPS",
+        salesMetric: "Estimated 15M+ to 20M+ shareware installations; ~3.5M registered",
+        salesRankValue: 18,
+        tags: ["Shareware", "Fast-Paced FPS", "Multiplayer Deathmatch", "Modding/WADs"],
+        description: "A visceral sci-fi horror first-person shooter where a lone space marine battles legions of demonic hellspawn on Phobos. It created the modern FPS multiplayer deathmatch.",
+        impact: "So popular across corporate and university networks that it was banned on office LANs for saturating bandwidth; coined the term 'Deathmatch'.",
+        tech: "John Carmack's revolutionary binary space partitioning (BSP) 2.5D engine delivered lightning-fast 3D rasterization with non-orthogonal walls, variable heights, and dynamic sector lighting."
+      },
+      {
+        id: "half-life-1998",
+        title: "Half-Life",
+        decade: "1990s",
+        releaseYear: 1998,
+        developer: "Valve",
+        publisher: "Sierra On-Line",
+        genre: "FPS",
+        salesMetric: "Over 9.3M+ retail copies on PC",
+        salesRankValue: 9.3,
+        tags: ["Story-Driven", "GoldSrc Engine", "Black Mesa", "Continuous Narrative"],
+        description: "Following theoretical physicist Gordon Freeman through the aftermath of the resonance cascade at the Black Mesa Research Facility, Half-Life abolished cutscenes in favor of real-time scripted narrative.",
+        impact: "Elevated the first-person shooter from mindless blaster to a premier medium for immersive, environmental storytelling and birthed Counter-Strike via its SDK.",
+        tech: "Valve's heavily modified GoldSrc engine featured skeletal animation, intelligent squad AI (HECU marines flank and flush out players), and seamless seamless map transitions."
+      },
+      {
+        id: "starcraft-1998",
+        title: "StarCraft",
+        decade: "1990s",
+        releaseYear: 1998,
+        developer: "Blizzard Entertainment",
+        publisher: "Blizzard Entertainment",
+        genre: "Strategy",
+        salesMetric: "Over 9.5M+ PC copies worldwide",
+        salesRankValue: 9.5,
+        tags: ["Esports Vanguard", "RTS", "Battle.net", "Asymmetric Factions"],
+        description: "The definitive real-time strategy masterpiece detailing the three-way war between Terrans, Zerg, and Protoss in the Koprulu Sector, perfected through Battle.net multiplayer.",
+        impact: "Became a national cultural phenomenon in South Korea, televised on dedicated 24-hour cable channels and laying the institutional foundations for modern esports.",
+        tech: "Unprecedented asymmetric balance across three completely divergent factions without sacrificing competitive parity; integrated client-server matchmaking via Battle.net."
+      },
+      {
+        id: "diablo-1996",
+        title: "Diablo / Diablo II",
+        decade: "1990s",
+        releaseYear: 1996,
+        developer: "Blizzard North",
+        publisher: "Blizzard Entertainment",
+        genre: "RPG",
+        salesMetric: "Combined over 6.5M+ PC units (Diablo II reached 4M+ quickly)",
+        salesRankValue: 6.5,
+        tags: ["Action RPG", "Loot Hunting", "Procedural Dungeons", "Dark Fantasy"],
+        description: "Transitioning turn-based rogue-likes into frantic real-time hack-and-slash combat, players descended beneath Tristram's cathedral to confront the Lord of Terror.",
+        impact: "Standardized color-coded loot tiers (Common, Magic, Rare, Unique) and addictive procedural dungeon crawlers across the entire games industry.",
+        tech: "Isometric 2.5D graphics utilizing perspective trickery and randomized labyrinth seed generation for infinite replay value."
+      },
+      {
+        id: "red-alert-1996",
+        title: "Command & Conquer: Red Alert",
+        decade: "1990s",
+        releaseYear: 1996,
+        developer: "Westwood Studios",
+        publisher: "Virgin Interactive",
+        genre: "Strategy",
+        salesMetric: "Over 3M+ copies worldwide",
+        salesRankValue: 3,
+        tags: ["RTS", "FMV Cutscenes", "Cold War Alternate History", "Hell March"],
+        description: "An alternate-history Cold War RTS where Albert Einstein travels back in time to eliminate Hitler, triggering an all-out global conflict between the Allies and Soviet Union.",
+        impact: "Elevated Full-Motion Video (FMV) storytelling with memorable performances, unforgettable music ('Hell March'), and frenetic LAN base-building matches.",
+        tech: "Smooth 2D sprite rendering supporting hundreds of simultaneous tanks, infantry, and Tesla coils with modem and IPX network play."
+      },
+      {
+        id: "age-of-empires-2-1999",
+        title: "Age of Empires II: The Age of Kings",
+        decade: "1990s",
+        releaseYear: 1999,
+        developer: "Ensemble Studios",
+        publisher: "Microsoft",
+        genre: "Strategy",
+        salesMetric: "Over 4M+ original PC retail (Millions more in HD/Definitive Editions)",
+        salesRankValue: 4,
+        tags: ["Historical RTS", "Medieval", "Economy Management", "Wonder Victory"],
+        description: "Spanning from the Dark Ages to the Imperial Age, players gather wood, food, gold, and stone to construct sprawling castles and field trebuchets and paladins.",
+        impact: "One of the most enduring competitive strategy games ever built, remaining a top-played competitive title over 25 years later.",
+        tech: "Genie Engine improvements supporting intricate unit formations, town-bell alarm routines, elevation height combat bonuses, and massive random map generation."
+      },
+      {
+        id: "quake-1996",
+        title: "Quake",
+        decade: "1990s",
+        releaseYear: 1996,
+        developer: "id Software",
+        publisher: "GT Interactive",
+        genre: "FPS",
+        salesMetric: "Over 1.8M+ retail; immense online multiplayer footprint",
+        salesRankValue: 2,
+        tags: ["Full 3D", "Rocket Jumping", "QuakeWorld", "Trent Reznor OST"],
+        description: "John Carmack's leap into genuine full 3D graphics, pitting players against Lovecraftian monstrosities with a brooding industrial soundtrack composed by Nine Inch Nails.",
+        impact: "QuakeWorld practically invented internet client prediction netcode for high-latency dial-up multiplayer, fostering the beginnings of competitive clans and speedrunning.",
+        tech: "True real-time polygonal 3D rendering with lightmaps (precalculated radiosity) and the groundbreaking console command-line interface for tuning engine parameters."
+      },
+      {
+        id: "baldurs-gate-1998",
+        title: "Baldur's Gate",
+        decade: "1990s",
+        releaseYear: 1998,
+        developer: "BioWare",
+        publisher: "Interplay Entertainment",
+        genre: "RPG",
+        salesMetric: "Over 2.2M+ PC copies",
+        salesRankValue: 2.2,
+        tags: ["D&D 2nd Edition", "Infinity Engine", "Party-Based", "Real-Time with Pause"],
+        description: "Set in the Forgotten Realms along the Sword Coast, players customize the child of Bhaal, recruit colorful companions like Minsc and Boo, and unravel an iron crisis.",
+        impact: "Single-handedly revived computer role-playing games (CRPGs) from near commercial death in the late 90s.",
+        tech: "The Infinity Engine enabled high-resolution pre-rendered 2D backgrounds overlaid with complex D&D 2nd Edition dice roll calculations and a seamless real-time-with-pause system."
+      },
+
+      // 2000s
+      {
+        id: "the-sims-2000",
+        title: "The Sims & The Sims 2",
+        decade: "2000s",
+        releaseYear: 2000,
+        developer: "Maxis",
+        publisher: "Electronic Arts",
+        genre: "Simulation",
+        salesMetric: "The Sims 1 sold ~16M+; franchise surpassed 100M+",
+        salesRankValue: 16,
+        tags: ["Life Simulation", "Domestic Architecture", "Broad Appeal", "Expansion Packs"],
+        description: "Will Wright's virtual dollhouse simulation enabled players to manage the daily lives, domestic relationships, careers, and home decor of autonomous digital suburbanites.",
+        impact: "Dethroned Myst as the highest-selling PC title of its era and attracted a vastly diverse demographic, expanding PC gaming far beyond traditional demographics.",
+        tech: "Sophisticated Maslow-inspired hierarchy of needs (hunger, hygiene, social, fun) driving autonomous behavior and modular object interaction scripting."
+      },
+      {
+        id: "world-of-warcraft-2004",
+        title: "World of Warcraft",
+        decade: "2000s",
+        releaseYear: 2004,
+        developer: "Blizzard Entertainment",
+        publisher: "Blizzard Entertainment",
+        genre: "RPG",
+        salesMetric: "Peak 12M+ monthly active subscribers; tens of millions of expansions",
+        salesRankValue: 120,
+        tags: ["MMORPG", "Azeroth", "Guild Raiding", "Cultural Phenomenon"],
+        description: "Blizzard brought the fantasy world of Azeroth into a seamless 3D massively multiplayer online role-playing game, forever transforming online social gaming.",
+        impact: "Became a worldwide cultural touchstone featured on South Park, redefining social gaming communities, guild organizations, and subscription business models.",
+        tech: "Virtually seamless zone streaming without loading screens between continents, robust sharding, and an open Lua-based UI addon modification framework."
+      },
+      {
+        id: "half-life-2-2004",
+        title: "Half-Life 2",
+        decade: "2000s",
+        releaseYear: 2004,
+        developer: "Valve",
+        publisher: "Valve",
+        genre: "FPS",
+        salesMetric: "Over 12M+ units across retail & early Steam platform",
+        salesRankValue: 12,
+        tags: ["Source Engine", "Gravity Gun", "Physics Simulation", "Steam Catalyst"],
+        description: "Gordon Freeman returns to battle the alien Combine in dystopian City 17, armed with the physics-manipulating Gravity Gun in a revolutionary demonstration of interactive worlds.",
+        impact: "Mandated the installation of Valve's Steam client for PC players, practically launching the modern era of PC digital distribution single-handedly.",
+        tech: "The Source Engine introduced cutting-edge Havok physics integration where objects possess accurate mass and density, coupled with revolutionary facial animation lip-syncing."
+      },
+      {
+        id: "counter-strike-source-2004",
+        title: "Counter-Strike & CS: Source",
+        decade: "2000s",
+        releaseYear: 2004,
+        developer: "Valve",
+        publisher: "Valve",
+        genre: "FPS",
+        salesMetric: "Over 15M+ retail/digital copies across 1.6 and Source",
+        salesRankValue: 15,
+        tags: ["Tactical Shooter", "Bomb Defusal", "LAN Centers", "Economy System"],
+        description: "Originally created as a Half-Life community mod by Minh Le and Jess Cliffe, CS paired Terrorists and Counter-Terrorists in round-based tactical gunfights with round-by-round weapon purchasing.",
+        impact: "Fueled thousands of PC internet cafes and LAN centers worldwide, dominating the competitive team-shooter landscape for decades.",
+        tech: "Precise hit-box calculations, recoil spray patterns, and client-server prediction ensuring pinpoint tactical aim."
+      },
+      {
+        id: "crysis-2007",
+        title: "Crysis",
+        decade: "2000s",
+        releaseYear: 2007,
+        developer: "Crytek",
+        publisher: "Electronic Arts",
+        genre: "FPS",
+        salesMetric: "Over 3M+ PC copies",
+        salesRankValue: 3,
+        tags: ["Can It Run Crysis?", "CryEngine 2", "Nanosuit", "Volumetric God-Rays"],
+        description: "A squad of US Delta Force operators outfitted with experimental Nanosuits investigate alien archaeological discoveries on the tropical Lingshan Islands.",
+        impact: "Birthed the immortal hardware benchmark meme 'Can it run Crysis?' which pushed GPUs and multi-core CPUs to their absolute limits for years.",
+        tech: "CryEngine 2 introduced DirectX 10 shaders, dynamic soft shadows, volumetric lighting, real-time procedural foliage destruction, and motion blur years ahead of its time."
+      },
+      {
+        id: "rome-total-war-2004",
+        title: "Rome: Total War",
+        decade: "2000s",
+        releaseYear: 2004,
+        developer: "Creative Assembly",
+        publisher: "Activision",
+        genre: "Strategy",
+        salesMetric: "Over 2M+ PC copies",
+        salesRankValue: 2,
+        tags: ["Grand Strategy", "Tactical Battles", "Roman Republic", "Mass Combat"],
+        description: "Seamlessly combining turn-based imperial grand strategy on an expansive campaign map with cinematic 3D tactical real-time battles involving tens of thousands of Roman legionaries.",
+        impact: "Set the high watermark for historical strategy battles, even utilized on the History Channel's 'Decisive Battles' television series to recreate historical warfare.",
+        tech: "Custom TW Engine capable of rendering and pathfinding up to 10,000 distinct polygonal soldiers simultaneously with moral and exhaustion systems."
+      },
+      {
+        id: "spore-2008",
+        title: "Spore",
+        decade: "2000s",
+        releaseYear: 2008,
+        developer: "Maxis",
+        publisher: "Electronic Arts",
+        genre: "Simulation",
+        salesMetric: "Over 3M+ PC copies",
+        salesRankValue: 3,
+        tags: ["Evolution", "Procedural Animation", "Creature Creator", "Space Stage"],
+        description: "Will Wright's grand ambition allowing players to guide a custom lifeform through five evolutionary stages: Cell, Creature, Tribe, Civilization, and Space colonization.",
+        impact: "Sparked unprecedented player-generated content sharing via the 'Sporepedia', archiving tens of millions of user-crafted organisms and vehicles.",
+        tech: "Groundbreaking procedural inverse-kinematic animation algorithms that let creatures walk, attack, and dance naturally no matter where players attached limbs or mouths."
+      },
+      {
+        id: "guild-wars-2005",
+        title: "Guild Wars",
+        decade: "2000s",
+        releaseYear: 2005,
+        developer: "ArenaNet",
+        publisher: "NCSoft",
+        genre: "RPG",
+        salesMetric: "Over 6.5M+ units on PC",
+        salesRankValue: 6.5,
+        tags: ["CORPG", "No Monthly Sub", "Competitive PvP", "Deck-Building Skills"],
+        description: "Formed by ex-Blizzard veterans, Guild Wars introduced a heavily instanced online role-playing world with tactical 8-skill deck setups and zero monthly subscription fees.",
+        impact: "Demonstrated that a top-tier online RPG could thrive without a monthly subscription, while pioneering smart client patch streaming.",
+        tech: "Proprietary streaming technology allowing clients to play while background downloading game assets, drastically reducing patch wait times."
+      },
+
+      // 2010s
+      {
+        id: "minecraft-2011",
+        title: "Minecraft",
+        decade: "2010s",
+        releaseYear: 2011,
+        developer: "Mojang (Markus 'Notch' Persson)",
+        publisher: "Mojang / Xbox Game Studios",
+        genre: "Sandbox/Survival",
+        salesMetric: "Over 300M+ lifetime total (Over 35M+ PC Java Edition)",
+        salesRankValue: 300,
+        tags: ["Voxel Sandbox", "Crafting", "Redstone", "Java Origins", "Global Phenomenon"],
+        description: "A limitless infinite-world voxel sandbox where players mine materials, build architectural wonders, engineer redstone circuits, and survive against night-time creepers.",
+        impact: "The best-selling video game of all time. Proved that indie alpha funding and open community modding could surpass the biggest AAA budgets in the world.",
+        tech: "Procedurally generated 3D voxel chunk architecture in Java utilizing Simplex noise algorithms to produce infinite natural biomes, caves, and ravines."
+      },
+      {
+        id: "pubg-2017",
+        title: "PUBG: Battlegrounds",
+        decade: "2010s",
+        releaseYear: 2017,
+        developer: "PUBG Studios / Krafton (Brendan Greene)",
+        publisher: "Krafton",
+        genre: "FPS",
+        salesMetric: "Over 42M+ paid PC copies on Steam (Steam concurrent record: 3.25M)",
+        salesRankValue: 42,
+        tags: ["Battle Royale", "100 Players", "Chicken Dinner", "Steam Record Breaker"],
+        description: "One hundred players skydive onto an 8x8 km island with nothing, scavenge for weapons and armor, and battle to the death inside an ever-shrinking blue energy field.",
+        impact: "Catalyzed the global Battle Royale explosion, inspiring Fortnite, Warzone, and Apex Legends, while setting Steam's all-time concurrent player peak.",
+        tech: "Pushed Unreal Engine 4's massive networking capabilities to host 100 simultaneous players with long-distance ballistics and vehicle physics across huge open maps."
+      },
+      {
+        id: "terraria-2011",
+        title: "Terraria",
+        decade: "2010s",
+        releaseYear: 2011,
+        developer: "Re-Logic (Andrew Spinks)",
+        publisher: "Re-Logic",
+        genre: "Sandbox/Survival",
+        salesMetric: "Over 58M+ across all platforms (~25M+ on PC)",
+        salesRankValue: 58,
+        tags: ["2D Sandbox", "Boss Fights", "Endless Updates", "Mining & Crafting"],
+        description: "An action-packed 2D sandbox adventure emphasizing underground exploration, character progression, elaborate boss battles, and town NPC settlement.",
+        impact: "One of the highest-rated games in Steam history with over one million positive reviews, celebrated for over a decade of free monumental content updates.",
+        tech: "Highly optimized 2D tile-grid engine managing thousands of unique items, lighting gradients, dynamic fluid physics (water, lava, honey), and particle spells."
+      },
+      {
+        id: "witcher-3-2015",
+        title: "The Witcher 3: Wild Hunt",
+        decade: "2010s",
+        releaseYear: 2015,
+        developer: "CD Projekt Red",
+        publisher: "CD Projekt",
+        genre: "RPG",
+        salesMetric: "Over 50M+ copies worldwide (PC accounts for massive plurality)",
+        salesRankValue: 50,
+        tags: ["Open World RPG", "Geralt of Rivia", "Gwent", "Storytelling Masterpiece"],
+        description: "Geralt of Rivia journeys across the war-torn Northern Realms to track down Ciri, the Child of Prophecy, fleeing the otherworldly phantom cavalcade known as the Wild Hunt.",
+        impact: "Raised the standard for open-world narrative quest design; every minor side quest possessed intricate morally grey storytelling and cinematic voice acting.",
+        tech: "REDengine 3 permitted vast, streaming open-world transitions between Novigrad and the Skellige Islands without artificial loading walls."
+      },
+      {
+        id: "csgo-2012",
+        title: "Counter-Strike: Global Offensive",
+        decade: "2010s",
+        releaseYear: 2012,
+        developer: "Valve / Hidden Path",
+        publisher: "Valve",
+        genre: "FPS",
+        salesMetric: "Free-to-Play titan; hundreds of millions of player accounts, record Steam player peaks",
+        salesRankValue: 150,
+        tags: ["Esports King", "Steam Marketplace", "Competitive Matchmaking", "Skins Economy"],
+        description: "The refined evolution of competitive counter-terrorist tactical gameplay, featuring dedicated ranked matchmaking, skin economies, and globe-spanning Major tournaments.",
+        impact: "Invented the modern digital cosmetics trading economy via the Steam Community Market, solidifying Counter-Strike as the eternal king of PC tactical esports.",
+        tech: "Extremely optimized tick-rate networking, server-side lag compensation, and Source engine updates supporting precise tournament spectator tooling."
+      },
+      {
+        id: "skyrim-2011",
+        title: "The Elder Scrolls V: Skyrim",
+        decade: "2010s",
+        releaseYear: 2011,
+        developer: "Bethesda Game Studios",
+        publisher: "Bethesda Softworks",
+        genre: "RPG",
+        salesMetric: "Over 60M+ copies across all platforms (Massive PC modding bedrock)",
+        salesRankValue: 60,
+        tags: ["Open World RPG", "Dragonborn", "Modding Hub", "Fus Ro Dah"],
+        description: "As the prophesied Dragonborn in the snowy northern province of Skyrim, players master the Thu'um shouts, battle dragons, and wander an engrossing living sandbox.",
+        impact: "Established the largest community modding ecosystem in video game history via Skyrim Script Extender and Nexus Mods, keeping the game constantly refreshed for over a decade.",
+        tech: "Creation Engine enabled radiant AI schedules for thousands of NPCs who live, eat, sleep, and react dynamically across a vast open northern world."
+      },
+      {
+        id: "garrys-mod-2006",
+        title: "Garry's Mod",
+        decade: "2010s",
+        releaseYear: 2006,
+        developer: "Facepunch Studios (Garry Newman)",
+        publisher: "Valve",
+        genre: "Sandbox/Survival",
+        salesMetric: "Over 20M+ copies on Steam",
+        salesRankValue: 20,
+        tags: ["Physics Sandbox", "Lua Modding", "Prop Hunt", "TTT", "Facepunch"],
+        description: "A physics sandbox without pre-determined objectives. Players spawn props, weld thrusters, wire circuits, and script entirely unique community game modes like Prop Hunt and TTT.",
+        impact: "Showcased the immense commercial viability of standalone mod sandboxes and spawned internet machinima and YouTube animation culture for a generation.",
+        tech: "Deep integration with Valve's Source engine physics alongside extensive Lua scripting API enabling infinite community gamemode creation."
+      },
+      {
+        id: "rust-2013",
+        title: "Rust",
+        decade: "2010s",
+        releaseYear: 2013,
+        developer: "Facepunch Studios",
+        publisher: "Facepunch Studios",
+        genre: "Sandbox/Survival",
+        salesMetric: "Over 16M+ copies on Steam",
+        salesRankValue: 16,
+        tags: ["Hardcore Survival", "Base Building", "Raiding", "PVP", "Wipes"],
+        description: "Waking up naked on a hostile procedurally generated island with only a rock and a torch, players construct fortified compounds, craft high-grade weapons, and raid rival clans.",
+        impact: "Defined the hardcore multiplayer survival base-raiding genre, with high-stakes social interactions, betrayals, and massive server wipe cycles.",
+        tech: "Optimized Unity networking to handle continuous persistence, destructible building socket systems, and dozens of simultaneous player raid explosives."
+      },
+
+      // 2020s
+      {
+        id: "baldurs-gate-3-2023",
+        title: "Baldur's Gate 3",
+        decade: "2020s",
+        releaseYear: 2023,
+        developer: "Larian Studios (Swen Vincke)",
+        publisher: "Larian Studios",
+        genre: "RPG",
+        salesMetric: "Over 15M+ copies on PC (Swept 2023 Game of the Year awards)",
+        salesRankValue: 15,
+        tags: ["D&D 5th Edition", "Turn-Based CRPG", "Immersive Sim Freedom", "Mind Flayers"],
+        description: "Infected by a Mind Flayer tadpole, players navigate a breathtakingly reactive D&D 5E narrative with unprecedented freedom of choice, tactical environmental combat, and cinematic acting.",
+        impact: "Shattered the myth that intricate turn-based CRPGs were niche relics, becoming a colossal mainstream and critical juggernaut on PC with nearly 900,000 concurrent players.",
+        tech: "Divinity 4.0 Engine featuring vertical layered battlefields, complex physics interactions (lighting surfaces on fire, pushing enemies off cliffs), and motion-captured dialogue."
+      },
+      {
+        id: "palworld-2024",
+        title: "Palworld",
+        decade: "2020s",
+        releaseYear: 2024,
+        developer: "Pocketpair",
+        publisher: "Pocketpair",
+        genre: "Sandbox/Survival",
+        salesMetric: "Over 15M+ Steam units in just 4 weeks (Steam peak: 2.1M concurrent)",
+        salesRankValue: 15,
+        tags: ["Monster Catching", "Survival Crafting", "Unreal Engine 5", "Co-op"],
+        description: "A survival crafting adventure where players collect and befriend creature companions ('Pals') to battle alongside them, operate factory assembly lines, and build massive bases.",
+        impact: "One of the fastest-selling PC games in history, achieving the second-highest concurrent player count ever recorded on Steam within days of early access launch.",
+        tech: "Unreal Engine 5 architecture managing complex multi-creature pathfinding, automated crafting logistics chains, and 32-player dedicated servers."
+      },
+      {
+        id: "helldivers-2-2024",
+        title: "Helldivers 2",
+        decade: "2020s",
+        releaseYear: 2024,
+        developer: "Arrowhead Game Studios",
+        publisher: "PlayStation Publishing",
+        genre: "FPS",
+        salesMetric: "Over 12M+ copies sold in 12 weeks (Massive PC player base)",
+        salesRankValue: 12,
+        tags: ["Co-op Shooter", "Galactic War", "Friendly Fire", "Stratagems"],
+        description: "Four-player squad tactical shooter defending 'Super Earth' from hordes of Terminid bugs and Automaton cyborgs through precision stratagem air strikes and hilarious friendly fire.",
+        impact: "Pioneered a live collaborative meta-narrative guided by an active human 'Game Master' (Joel), setting records for Sony's PC publishing initiatives.",
+        tech: "Discontinued Autodesk Stingray engine pushed to its zenith with volumetric smoke, procedural terrain deformation, and real-time limb armor penetration physics."
+      },
+      {
+        id: "black-myth-wukong-2024",
+        title: "Black Myth: Wukong",
+        decade: "2020s",
+        releaseYear: 2024,
+        developer: "Game Science",
+        publisher: "Game Science",
+        genre: "Action",
+        salesMetric: "Over 20M+ units sold in first month (All-time singleplayer Steam peak: 2.41M)",
+        salesRankValue: 22,
+        tags: ["Journey to the West", "Unreal Engine 5", "Singleplayer Record", "Action RPG"],
+        description: "Rooted in classic Chinese mythology, players take up the staff of the Destined One, mastering transformations, martial arts spells, and confronting mythical celestial beings.",
+        impact: "Obliterated the all-time concurrent player record for a single-player game on Steam (2.41M), highlighting the explosive rise of Chinese AAA game development on PC.",
+        tech: "Flagship demonstration of Unreal Engine 5's Nanite virtualized micropolygon geometry, Lumen hardware ray tracing, and full DLSS 3 frame generation."
+      },
+      {
+        id: "elden-ring-2022",
+        title: "Elden Ring",
+        decade: "2020s",
+        releaseYear: 2022,
+        developer: "FromSoftware (Hidetaka Miyazaki)",
+        publisher: "Bandai Namco Entertainment",
+        genre: "RPG",
+        salesMetric: "Over 25M+ worldwide units (PC proved to be the premier launch platform)",
+        salesRankValue: 25,
+        tags: ["Souls-like", "The Lands Between", "Open World", "George R.R. Martin"],
+        description: "The Lands Between invites the Tarnished on an uncompromising quest across catacombs, sunken academies, and the colossal Erdtree to restore the Elden Ring.",
+        impact: "Elevated the challenging Souls-like subgenre into an open-world phenomenon, earning universal acclaim and unprecedented PC community acclaim.",
+        tech: "Proprietary FromSoftware engine handling intricate seamless world transitions, dynamic weather, mounting/dismounting combat physics, and asynchronous player ghosts."
+      },
+      {
+        id: "cyberpunk-2077-2020",
+        title: "Cyberpunk 2077 & Phantom Liberty",
+        decade: "2020s",
+        releaseYear: 2020,
+        developer: "CD Projekt Red",
+        publisher: "CD Projekt",
+        genre: "RPG",
+        salesMetric: "Over 25M+ copies sold (PC was the undisputed showcase platform)",
+        salesRankValue: 25,
+        tags: ["Night City", "Full Ray Tracing / Path Tracing", "Sci-Fi", "Keanu Reeves"],
+        description: "Stepping into the cyber-enhanced boots of mercenary V in Night City, players battle megacorporations while hosting the digital ghost of rock rebel Johnny Silverhand in their head.",
+        impact: "Served as the definitive technical showcase for next-generation PC GPUs and DLSS 3.5 Path Tracing; celebrated for a triumphant 2.0 update comeback.",
+        tech: "State-of-the-art REDengine 4 delivering real-time full ray tracing (Path Tracing) with NVIDIA DLSS 3.5 Ray Reconstruction, showcasing the absolute pinnacle of PC visual fidelity."
+      },
+      {
+        id: "manor-lords-2024",
+        title: "Manor Lords",
+        decade: "2020s",
+        releaseYear: 2024,
+        developer: "Slavic Magic (Greg Styczeń)",
+        publisher: "Hooded Horse",
+        genre: "Strategy",
+        salesMetric: "Over 2M+ copies sold in 3 weeks by a solo developer",
+        salesRankValue: 2.5,
+        tags: ["Medieval City Builder", "Solo Developer", "Historical Accuracy", "Gridless"],
+        description: "A medieval city builder crafted primarily by solo developer Greg Styczeń, featuring realistic gridless town placement, seasonal agricultural cycles, and tactical RTS skirmishes.",
+        impact: "Became the most wishlisted title in Steam history prior to launch, demonstrating the triumph of boutique publisher curation and historical authenticity on PC.",
+        tech: "Unreal Engine 4 utilizing photogrammetry assets, motion-captured medieval combatants, and organic, non-grid pathing simulation."
+      }
+    ];
+
+    // -------------------------------------------------------------
+    // Hardware & Architectural Milestones Per Decade
+    // -------------------------------------------------------------
+    const techMilestones = [
+      {
+        decade: "1980s",
+        eraTitle: "Microcomputers & DOS",
+        media: "5.25\" & 3.5\" Floppy Disks",
+        graphics: "CGA (4 colors) & EGA (16 colors) to VGA",
+        audio: "PC Internal Speaker (Beeper) & AdLib / Sound Blaster FM",
+        cpu: "Intel 8086 / 286 / 386 (~4.77 MHz to 25 MHz)",
+        network: "Dial-up BBS & Sneakernet",
+        icon: "save"
+      },
+      {
+        decade: "1990s",
+        eraTitle: "Multimedia & 3D Acceleration",
+        media: "CD-ROM (650MB) Drives & Shareware Disks",
+        graphics: "3Dfx Voodoo (Glide API), early OpenGL & Direct3D",
+        audio: "Sound Blaster 16, WaveTable MIDI, CD Redbook Audio",
+        cpu: "Intel 486 & Pentium II/III (33 MHz to 500 MHz)",
+        network: "Dial-up 56k, IPX LAN & early Battle.net",
+        icon: "disc"
+      },
+      {
+        decade: "2000s",
+        eraTitle: "Broadband & Steam Digital Dawn",
+        media: "DVD-ROM & Early Digital Downloads (Steam launch in 2003)",
+        graphics: "NVIDIA GeForce (T&L, Shaders) & ATI Radeon",
+        audio: "EAX 3D Audio, 5.1/7.1 Surround Sound, Integrated Realtek",
+        cpu: "Pentium 4 to Core 2 Duo & AMD Athlon 64",
+        network: "High-Speed DSL & Cable Broadband, VoIP (TeamSpeak)",
+        icon: "hard-drive"
+      },
+      {
+        decade: "2010s",
+        eraTitle: "The Digital Dominance & Mod Sandboxes",
+        media: "100% Digital (Steam, GOG, Epic Store), High-speed NVMe SSDs",
+        graphics: "DirectX 11/12, Vulkan API, 1080p to 4K 144Hz displays",
+        audio: "Dolby Atmos, Spatial HRTF Headphones, Discord voice",
+        cpu: "Multi-core Intel Core i7 & AMD Ryzen architectures",
+        network: "Gigabit Fiber, Worldwide cloud server matchmaking",
+        icon: "wifi"
+      },
+      {
+        decade: "2020s",
+        eraTitle: "Ray Tracing, AI Upscaling & Handheld PCs",
+        media: "Ultra-fast PCIe Gen 4/5 SSDs (DirectStorage API)",
+        graphics: "Hardware Ray Tracing (Path Tracing), DLSS 3.5 & FSR frame gen",
+        audio: "AI-enhanced spatial audio & neural noise cancellation",
+        cpu: "16+ core hybrid architectures (Intel Raptor Lake / AMD Zen 4/5)",
+        network: "Wi-Fi 7, ultra-low latency server meshes, Steam Deck ecosystem",
+        icon: "cpu"
+      }
+    ];
+
+    // -------------------------------------------------------------
+    // Application State
+    // -------------------------------------------------------------
+    let currentDecade = "ALL";
+    let currentGenre = "ALL";
+    let currentSort = "sales-desc";
+    let searchQuery = "";
+
+    // DOM Elements
+    const decadeTabsContainer = document.getElementById('decadeTabsContainer');
+    const gamesGrid = document.getElementById('gamesGrid');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const genreSelect = document.getElementById('genreSelect');
+    const sortSelect = document.getElementById('sortSelect');
+    const filterCount = document.getElementById('filterCount');
+    const activeTags = document.getElementById('activeTags');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+    const techSummarySection = document.getElementById('techSummarySection');
+    const toggleTechSummaryBtn = document.getElementById('toggleTechSummaryBtn');
+    const techMilestonesGrid = document.getElementById('techMilestonesGrid');
+
+    // Modal DOM Elements
+    const gameModal = document.getElementById('gameModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalCloseActionBtn = document.getElementById('modalCloseActionBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDecadeBadge = document.getElementById('modalDecadeBadge');
+    const modalGenreBadge = document.getElementById('modalGenreBadge');
+    const modalYear = document.getElementById('modalYear');
+    const modalSales = document.getElementById('modalSales');
+    const modalDev = document.getElementById('modalDev');
+    const modalPublisher = document.getElementById('modalPublisher');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalImpact = document.getElementById('modalImpact');
+    const modalTech = document.getElementById('modalTech');
+    const modalTags = document.getElementById('modalTags');
+
+    // Decades Definition
+    const decades = [
+      { id: "ALL", label: "All Eras (1980 - 2026)", shortLabel: "All Eras" },
+      { id: "1980s", label: "1980s: The Pioneers", shortLabel: "1980s" },
+      { id: "1990s", label: "1990s: 3D & Shareware", shortLabel: "1990s" },
+      { id: "2000s", label: "2000s: MMOs & Steam", shortLabel: "2000s" },
+      { id: "2010s", label: "2010s: Sandboxes & Esports", shortLabel: "2010s" },
+      { id: "2020s", label: "2020s: Ray Tracing & Giants", shortLabel: "2020s" },
+    ];
+
+    // Decade color helper
+    function getDecadeAccent(decade) {
+      switch(decade) {
+        case '1980s': return { text: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/30' };
+        case '1990s': return { text: 'text-cyan-400', bg: 'bg-cyan-400/10', border: 'border-cyan-400/30' };
+        case '2000s': return { text: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-400/30' };
+        case '2010s': return { text: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/30' };
+        case '2020s': return { text: 'text-pink-400', bg: 'bg-pink-400/10', border: 'border-pink-400/30' };
+        default: return { text: 'text-slate-300', bg: 'bg-slate-800', border: 'border-slate-700' };
+      }
+    }
+
+    // Initialize Tech Milestones Widget
+    function renderTechMilestones() {
+      techMilestonesGrid.innerHTML = techMilestones.map(m => {
+        const accent = getDecadeAccent(m.decade);
+        return `
+          <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded ${accent.bg} ${accent.text} border ${accent.border}">
+                  ${m.decade}
+                </span>
+                <i data-lucide="${m.icon}" class="w-4 h-4 text-slate-500"></i>
+              </div>
+              <h4 class="text-xs font-semibold text-slate-200 mb-1.5">${m.eraTitle}</h4>
+              <ul class="text-[11px] text-slate-400 space-y-1">
+                <li><strong class="text-slate-300 font-medium">Media:</strong> ${m.media}</li>
+                <li><strong class="text-slate-300 font-medium">Video:</strong> ${m.graphics}</li>
+                <li><strong class="text-slate-300 font-medium">CPU:</strong> ${m.cpu}</li>
+              </ul>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center justify-between">
+              <span>${m.network}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Initialize Navigation Decade Tabs
+    function renderDecadeTabs() {
+      decadeTabsContainer.innerHTML = decades.map(dec => {
+        const isActive = currentDecade === dec.id;
+        const activeClass = isActive 
+          ? "bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20" 
+          : "bg-slate-900/90 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800";
+        return `
+          <button 
+            onclick="setDecade('${dec.id}')"
+            class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 ${activeClass}"
+          >
+            ${dec.shortLabel}
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Filter & Sort Logic
+    function getFilteredGames() {
+      return gamesData.filter(game => {
+        // Decade filter
+        if (currentDecade !== 'ALL' && game.decade !== currentDecade) {
+          return false;
+        }
+        // Genre filter
+        if (currentGenre !== 'ALL') {
+          if (!game.genre.toLowerCase().includes(currentGenre.toLowerCase())) {
+            return false;
+          }
+        }
+        // Search query
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = game.title.toLowerCase().includes(q);
+          const matchDev = game.developer.toLowerCase().includes(q);
+          const matchPub = game.publisher.toLowerCase().includes(q);
+          const matchTags = game.tags.some(t => t.toLowerCase().includes(q));
+          const matchDesc = game.description.toLowerCase().includes(q);
+          if (!matchTitle && !matchDev && !matchPub && !matchTags && !matchDesc) {
+            return false;
+          }
+        }
+        return true;
+      }).sort((a, b) => {
+        if (currentSort === 'sales-desc') {
+          return b.salesRankValue - a.salesRankValue;
+        } else if (currentSort === 'year-asc') {
+          return a.releaseYear - b.releaseYear;
+        } else if (currentSort === 'year-desc') {
+          return b.releaseYear - a.releaseYear;
+        } else if (currentSort === 'title-asc') {
+          return a.title.localeCompare(b.title);
+        }
+        return 0;
+      });
+    }
+
+    // Render Game Cards
+    function renderGames() {
+      const filtered = getFilteredGames();
+
+      // Update counter
+      filterCount.innerHTML = `Showing <strong class="text-slate-200">${filtered.length}</strong> of ${gamesData.length} iconic PC milestones`;
+
+      if (filtered.length === 0) {
+        gamesGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      gamesGrid.innerHTML = filtered.map(game => {
+        const accent = getDecadeAccent(game.decade);
+        return `
+          <article class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 hover:border-slate-700 transition flex flex-col justify-between neon-border group">
+            <div>
+              <!-- Top Badges & Decade -->
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="text-xs font-bold px-2 py-0.5 rounded-full ${accent.bg} ${accent.text} border ${accent.border}">
+                  ${game.decade}
+                </span>
+                <span class="text-xs font-mono font-medium text-slate-400 bg-slate-950 px-2 py-0.5 rounded-md border border-slate-800">
+                  ${game.releaseYear}
+                </span>
+              </div>
+
+              <!-- Title & Developer -->
+              <h3 class="font-display text-lg font-bold text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                ${game.title}
+              </h3>
+              <p class="text-xs text-slate-400 mb-3 truncate">
+                by <span class="text-slate-300 font-medium">${game.developer}</span>
+              </p>
+
+              <!-- Sales / Popularity Banner -->
+              <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800/80 mb-3 flex items-start gap-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                <div class="text-[11px] leading-tight">
+                  <span class="text-slate-400 block font-medium">Estimated PC Impact / Sales:</span>
+                  <span class="text-emerald-400 font-semibold line-clamp-2">${game.salesMetric}</span>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <p class="text-slate-300 text-xs sm:text-[13px] leading-relaxed line-clamp-3 mb-4">
+                ${game.description}
+              </p>
+            </div>
+
+            <div>
+              <!-- Tags -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">
+                  ${game.genre}
+                </span>
+                ${game.tags.slice(0, 2).map(tag => `
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800">
+                    ${tag}
+                  </span>
+                `).join('')}
+              </div>
+
+              <!-- Card Action Button -->
+              <button 
+                onclick="openGameDetails('${game.id}')"
+                class="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-slate-200 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 group-hover:bg-slate-800 group-hover:text-emerald-400"
+              >
+                <span>Full History & Impact</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Refresh lucide icons
+      lucide.createIcons();
+    }
+
+    // Modal details opener
+    window.openGameDetails = function(gameId) {
+      const game = gamesData.find(g => g.id === gameId);
+      if (!game) return;
+
+      const accent = getDecadeAccent(game.decade);
+
+      modalTitle.innerText = game.title;
+      modalDecadeBadge.innerText = game.decade;
+      modalDecadeBadge.className = `px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${accent.bg} ${accent.text} border ${accent.border}`;
+      modalGenreBadge.innerText = game.genre;
+      modalYear.innerText = game.releaseYear;
+      modalSales.innerText = game.salesMetric;
+      modalDev.innerText = game.developer;
+      modalPublisher.innerText = game.publisher;
+      modalDescription.innerText = game.description;
+      modalImpact.innerText = game.impact;
+      modalTech.innerText = game.tech;
+
+      modalTags.innerHTML = game.tags.map(tag => `
+        <span class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-300 border border-slate-700">
+          #${tag}
+        </span>
+      `).join('');
+
+      gameModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    };
+
+    function closeModal() {
+      gameModal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Global navigation handlers
+    window.setDecade = function(decadeId) {
+      currentDecade = decadeId;
+      renderDecadeTabs();
+      renderGames();
+    };
+
+    // CSV Exporter
+    function exportToCSV() {
+      const headers = ["Title", "Decade", "Release Year", "Developer", "Publisher", "Genre", "Sales Metric", "Key Tags", "Description"];
+      const rows = gamesData.map(g => [
+        `"${g.title.replace(/"/g, '""')}"`,
+        `"${g.decade}"`,
+        g.releaseYear,
+        `"${g.developer.replace(/"/g, '""')}"`,
+        `"${g.publisher.replace(/"/g, '""')}"`,
+        `"${g.genre.replace(/"/g, '""')}"`,
+        `"${g.salesMetric.replace(/"/g, '""')}"`,
+        `"${g.tags.join(', ')}"`,
+        `"${g.description.replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `pc_gaming_milestones_catalog.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Event Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      clearSearchBtn.classList.toggle('hidden', searchQuery.length === 0);
+      renderGames();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      renderGames();
+    });
+
+    genreSelect.addEventListener('change', (e) => {
+      currentGenre = e.target.value;
+      renderGames();
+    });
+
+    sortSelect.addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      renderGames();
+    });
+
+    resetFiltersBtn.addEventListener('click', () => {
+      currentDecade = 'ALL';
+      currentGenre = 'ALL';
+      currentSort = 'sales-desc';
+      searchQuery = '';
+      searchInput.value = '';
+      genreSelect.value = 'ALL';
+      sortSelect.value = 'sales-desc';
+      clearSearchBtn.classList.add('hidden');
+      renderDecadeTabs();
+      renderGames();
+    });
+
+    exportCsvBtn.addEventListener('click', exportToCSV);
+
+    closeModalBtn.addEventListener('click', closeModal);
+    modalCloseActionBtn.addEventListener('click', closeModal);
+    gameModal.addEventListener('click', (e) => {
+      if (e.target === gameModal) {
+        closeModal();
       }
     });
 
-    function appendLine(text) {
-      const p = document.createElement('div');
-      p.style.marginBottom = '8px';
-      const span = document.createElement('span');
-      span.textContent = text;
-      p.appendChild(span);
-      messages.appendChild(p);
-      messages.scrollTop = messages.scrollHeight;
-      return span;
-    }
+    // Toggle hardware summary accordion
+    toggleTechSummaryBtn.addEventListener('click', () => {
+      techSummarySection.classList.toggle('hidden');
+    });
+
+    // Keyboard support for modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !gameModal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    // Initialization on window load
+    window.onload = function() {
+      renderTechMilestones();
+      renderDecadeTabs();
+      renderGames();
+      lucide.createIcons();
+    };
   </script>
 </body>
 </html>
