@@ -10,3 +10,6 @@
     "wrangler": "^3.114.0"
   }
 }
+"scripts": {
+  "build": "exit 0"
+}
