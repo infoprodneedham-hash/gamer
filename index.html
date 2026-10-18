@@ -1981,53 +1981,100 @@
     });
   </script>
 
+ <!-- ================================================================= -->
+  <!-- LAYER 5: CYBER AI CHATBOT DRAWER                                  -->
   <!-- ================================================================= -->
-  <!-- LAYER 5: CYBER AI CHATBOT DRAWER (Z-80)                          -->
-  <!-- ================================================================= -->
-  
+
+  <!-- Standalone High-Priority Floating Button -->
+  <style>
+    #cf-ai-toggle {
+      position: fixed !important;
+      bottom: 24px !important;
+      right: 24px !important;
+      width: auto !important;
+      height: auto !important;
+      z-index: 999999 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      background: #0891b2 !important;
+      color: #05070a !important;
+      padding: 10px 18px !important;
+      border-radius: 4px !important;
+      border: 1px solid #22d3ee !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.05em !important;
+      text-transform: uppercase !important;
+      cursor: pointer !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.5) !important;
+      transition: background 0.2s ease, transform 0.15s ease !important;
+    }
+    #cf-ai-toggle:hover {
+      background: #06b6d4 !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 0 22px rgba(6, 182, 212, 0.8) !important;
+    }
+    #cf-ai-backdrop {
+      display: none;
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(0, 0, 0, 0.75) !important;
+      backdrop-filter: blur(4px);
+      z-index: 1000000 !important;
+      opacity: 0;
+      transition: opacity 0.25s ease-out;
+    }
+    #cf-ai-drawer {
+      display: none;
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+      max-width: 440px !important;
+      background: #05070a !important;
+      border-left: 1px solid #1e293b !important;
+      z-index: 1000001 !important;
+      box-shadow: -15px 0 35px rgba(0, 0, 0, 0.8) !important;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-direction: column !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      box-sizing: border-box !important;
+    }
+    #cf-ai-drawer * {
+      box-sizing: border-box !important;
+    }
+  </style>
+
+  <!-- Button is outside, anchored directly to viewport -->
+  <button 
+    id="cf-ai-toggle" 
+    type="button" 
+    aria-label="Open AI Assistant" 
+    onclick="toggleAiDrawer(true)">
+    <span>[AI TERMINAL]</span>
+  </button>
 
   <!-- Screen Backdrop Overlay -->
   <div id="cf-ai-backdrop" onclick="toggleAiDrawer(false)"></div>
 
   <!-- Slide-Out Drawer -->
   <aside id="cf-ai-drawer" aria-label="Page AI Chatbot">
-    <!-- Header -->
+    <!-- Header (p tag completely healed) -->
     <div style="padding: 16px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; background: rgba(10, 13, 20, 0.9);">
       <div style="display: flex; align-items: center; gap: 10px;">
         <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
         <div>
           <h3 style="margin: 0; font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em;">AI QUERY TERMINAL</h3>
-          <p style="margin: 0; font-si<style>
-  #cf-ai-toggle {
-    position: fixed !important;
-    bottom: 24px !important;
-    right: 24px !important;
-    width: auto !important;
-    height: auto !important;
-    z-index: 999999 !important;
-    display: block !important;
-    background: #0891b2 !important;
-    color: #05070a !important;
-    padding: 12px 20px !important;
-    border-radius: 4px !important;
-    border: 2px solid #22d3ee !important;
-    font-family: monospace !important;
-    font-size: 13px !important;
-    font-weight: 800 !important;
-    cursor: pointer !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.6) !important;
-  }
-</style>
-
-<button 
-  id="cf-ai-toggle" 
-  type="button" 
-  onclick="toggleAiDrawer(true)">
-  [AI TERMINAL]
-</button>ze: 10px; color: #06b6d4; text-transform: uppercase;">Llama 3.1 // Wiki Grounded</p>
+          <p style="margin: 0; font-size: 10px; color: #06b6d4; text-transform: uppercase;">Llama 3.1 // Wiki Grounded</p>
         </div>
       </div>
       <button 
