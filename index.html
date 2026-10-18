@@ -147,7 +147,7 @@
   <!-- 3. AI CHATBOT DRAWER LAYER (ISOLATED AT END OF BODY)              -->
   <!-- ================================================================= -->
 
-  <!-- A. Floating Action Button (Z-40) -->
+  <!-- A. Floating Action Button (Z-INDEX: 40) -->
   <button 
     id="chat-toggle-btn"
     type="button" 
@@ -158,20 +158,20 @@
     <span>AI Terminal</span>
   </button>
 
- <!-- B. Backdrop Overlay -->
-<div 
-  id="chat-backdrop" 
-  onclick="closeChatDrawer()"
-  style="z-index: 998; pointer-events: none;"
-  class="fixed inset-0 bg-black/75 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out"
-></div>
+  <!-- B. Backdrop Overlay (Z-INDEX: 998) -->
+  <div 
+    id="chat-backdrop" 
+    onclick="closeChatDrawer()"
+    style="z-index: 998; pointer-events: none; opacity: 0;"
+    class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity duration-300 ease-out"
+  ></div>
 
-<!-- C. Slide-out Drawer Panel -->
-<aside 
-  id="chat-drawer" 
-  style="z-index: 999;"
-  class="fixed top-0 right-0 h-full w-full sm:w-[440px] bg-rig-950 border-l border-slate-800 flex flex-col shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out font-mono"
->
+  <!-- C. Slide-out Drawer Panel (Z-INDEX: 999) -->
+  <aside 
+    id="chat-drawer" 
+    style="z-index: 999;"
+    class="fixed top-0 right-0 h-full w-full sm:w-[440px] bg-rig-950 border-l border-slate-800 flex flex-col shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out font-mono"
+  >
     <!-- Drawer Header -->
     <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-rig-900/70">
       <div class="flex items-center gap-2.5">
@@ -387,31 +387,29 @@
     const messages = document.getElementById('chat-messages');
 
     function openChatDrawer() {
-  // 1. Activate backdrop
-  backdrop.style.pointerEvents = 'auto';
-  backdrop.classList.remove('opacity-0');
-  backdrop.classList.add('opacity-100');
+      // 1. Activate backdrop
+      backdrop.style.pointerEvents = 'auto';
+      backdrop.style.opacity = '1';
 
-  // 2. Slide in drawer
-  drawer.classList.remove('translate-x-full');
-  drawer.classList.add('translate-x-0');
+      // 2. Slide in drawer
+      drawer.classList.remove('translate-x-full');
+      drawer.classList.add('translate-x-0');
 
-  // 3. Focus input
-  setTimeout(() => {
-    if (input) input.focus();
-  }, 250);
-}
+      // 3. Focus input
+      setTimeout(() => {
+        if (input) input.focus();
+      }, 250);
+    }
 
-function closeChatDrawer() {
-  // 1. Fade backdrop and disable click interception
-  backdrop.style.pointerEvents = 'none';
-  backdrop.classList.remove('opacity-100');
-  backdrop.classList.add('opacity-0');
+    function closeChatDrawer() {
+      // 1. Fade backdrop and disable click interception
+      backdrop.style.pointerEvents = 'none';
+      backdrop.style.opacity = '0';
 
-  // 2. Slide out drawer
-  drawer.classList.remove('translate-x-0');
-  drawer.classList.add('translate-x-full');
-}
+      // 2. Slide out drawer
+      drawer.classList.remove('translate-x-0');
+      drawer.classList.add('translate-x-full');
+    }
 
     // Escape key listener for keyboard hygiene
     window.addEventListener('keydown', (e) => {
